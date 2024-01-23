@@ -67,5 +67,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
+    implementation("io.agora.rtc:chat-sdk:1.2.1")
+
+
 
 }
