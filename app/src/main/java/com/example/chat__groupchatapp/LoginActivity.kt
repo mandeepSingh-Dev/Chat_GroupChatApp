@@ -55,6 +55,10 @@ class LoginActivity : AppCompatActivity() {
             chatClient?.init(this,optins)
             chatClient?.setDebugMode(true)
 
+            if(chatClient?.currentUser != null){
+                logout()
+            }
+
             setListeners()
         }catch (e:Exception){
             showToast(e.message)
@@ -97,6 +101,9 @@ class LoginActivity : AppCompatActivity() {
     fun loginToChat(user : String, pwd : String){
         chatClient?.login(user,pwd,object : CallBack{
             override fun onSuccess() {
+                val intent = Intent(this@LoginActivity,UsersGroupActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
                 showToast(message = "Login onSuccess")
             }
             override fun onError(code: Int, error: String?) {

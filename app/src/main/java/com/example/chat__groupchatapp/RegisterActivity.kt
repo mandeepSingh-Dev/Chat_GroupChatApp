@@ -28,17 +28,26 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setUpChatClient()
+
+
         binding.composeView.setContent {
             BounceButton("Register", onButtonClick = {
-                val username = binding.userNameEditText.text?.trim().toString()
-                val pwd = binding.passwordEditText.text?.trim().toString()
-                val cnfPwd = binding.confirmpasswordEditText.text?.trim().toString()
+                val username = binding.userNameEditText.text?.toString()?.trim().toString()
+                val pwd = binding.passwordEditText.text?.toString()?.trim().toString()
+                val cnfPwd = binding.confirmpasswordEditText.text?.toString()?.trim().toString()
 
                 if(pwd == cnfPwd){
 
                     CoroutineScope(Dispatchers.Main).launch {
-                        async {  chatClient?.createAccount(username, pwd) }.join()
-                        loginToChat(username,pwd)
+                        if(!username.isNullOrEmpty() && !pwd.isNullOrEmpty()){
+                            try {
+                                chatClient?.createAccount(username, pwd)
+                            }catch (e:Exception){}
+                            loginToChat(username,pwd)
+                        }
+
                     }
 
                 }else{
@@ -46,7 +55,9 @@ class RegisterActivity : AppCompatActivity() {
                 }
             })
         }
-        setUpChatClient()
+
+
+
 
     }
 
