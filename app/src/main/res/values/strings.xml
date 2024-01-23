@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Chat_&amp;_GroupChatApp</string>
+    <string name="login">Login</string>
+    <string name="TXT_LBL_username_or_email">Username or Email</string>
+</resources>
