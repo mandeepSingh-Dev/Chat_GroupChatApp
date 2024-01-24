@@ -1,11 +1,9 @@
-package com.example.chat__groupchatapp
+package com.example.chat__groupchatapp.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.compose.runtime.Composable
 import com.example.chat__groupchatapp.Utils.Widgets.BounceButton
 import com.example.chat__groupchatapp.Utils.showToast
-import com.example.chat__groupchatapp.databinding.ActivityMainBinding
 import com.example.chat__groupchatapp.databinding.ActivityRegisterBinding
 import io.agora.CallBack
 import io.agora.ConnectionListener
@@ -13,7 +11,6 @@ import io.agora.chat.ChatClient
 import io.agora.chat.ChatOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {

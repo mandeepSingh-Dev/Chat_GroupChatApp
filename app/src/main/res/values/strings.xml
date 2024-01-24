@@ -2,4 +2,7 @@
     <string name="app_name">Chat_&amp;_GroupChatApp</string>
     <string name="login">Login</string>
     <string name="TXT_LBL_username_or_email">Username or Email</string>
+    <string name="APP_KEY">611085667#1266092</string>
+    <string name="APP_ID">3b7f0443aa0f4ad4ab145c3044729318</string>
+    <string name="APP_CERTIFICATE">13b22f34693341ac82cd76b516494fb3</string>
 </resources>

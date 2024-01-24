@@ -1,5 +1,6 @@
 package com.example.chat__groupchatapp.Utils.Widgets
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -29,7 +30,9 @@ fun BounceButton(buttonText: String, onButtonClick : () -> Unit){
     var colorAnimate = animateColorAsState(targetValue = if(buttonState == ButtonState.PRESSED) Color.Black else Color.Blue, label = "", animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy)).value
 
 
-    OutlinedButton(onClick = {onButtonClick()}, colors = ButtonDefaults.buttonColors(colorAnimate), modifier = Modifier
+    OutlinedButton(onClick = {onButtonClick()
+        Log.d("vlkvf","34343")
+    }, colors = ButtonDefaults.buttonColors(colorAnimate), modifier = Modifier
         .fillMaxWidth()
 
         /* .graphicsLayer {
@@ -39,7 +42,9 @@ fun BounceButton(buttonText: String, onButtonClick : () -> Unit){
         .clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = null,
-            onClick = {}
+            onClick = {
+                Log.d("vlkvf","fvknfjkvf")
+            }
         )
         .pointerInput(buttonState) {
 

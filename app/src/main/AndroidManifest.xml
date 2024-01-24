@@ -19,13 +19,19 @@
         android:theme="@style/Theme.Chat__GroupChatApp"
         tools:targetApi="31">
         <activity
-            android:name=".UsersGroupActivity"
+            android:name=".ui.activities.UsersGroupActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".ui.activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.activities.LoginActivity"
+            android:exported="true">
+
+        </activity>
+
+
+        <activity android:name=".ui.activities.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

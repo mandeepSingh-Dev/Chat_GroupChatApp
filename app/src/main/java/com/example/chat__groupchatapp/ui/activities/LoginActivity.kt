@@ -1,8 +1,10 @@
-package com.example.chat__groupchatapp
+package com.example.chat__groupchatapp.ui.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.Widgets.BounceButton
 import com.example.chat__groupchatapp.Utils.showToast
 import com.example.chat__groupchatapp.databinding.ActivityMainBinding
@@ -15,7 +17,6 @@ class LoginActivity : AppCompatActivity() {
     
     lateinit var binding : ActivityMainBinding
 
-    var appKey = "611085667#1266092"
       var chatClient : ChatClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
      //   setListeners()
 
         binding.registerTextView.setOnClickListener {
-            startActivity(Intent(this,RegisterActivity::class.java))
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
@@ -49,15 +50,11 @@ class LoginActivity : AppCompatActivity() {
     private fun setUpChatClient(){
         try {
             val optins = ChatOptions()
-            optins.appKey = appKey
+            optins.appKey = getString(R.string.APP_KEY)
 
              chatClient = ChatClient.getInstance()
             chatClient?.init(this,optins)
             chatClient?.setDebugMode(true)
-
-            if(chatClient?.currentUser != null){
-                logout()
-            }
 
             setListeners()
         }catch (e:Exception){
@@ -66,10 +63,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setListeners(){
-        chatClient?.chatManager()?.addMessageListener {
-
-        }
-
         chatClient?.addConnectionListener(object : ConnectionListener{
             override fun onConnected() {
                 showToast("onConnected")
@@ -97,22 +90,27 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-
-    fun loginToChat(user : String, pwd : String){
+    private fun loginToChat(user : String, pwd : String){
+        binding.progressBar.visibility = View.VISIBLE
         chatClient?.login(user,pwd,object : CallBack{
             override fun onSuccess() {
-                val intent = Intent(this@LoginActivity,UsersGroupActivity::class.java)
+                runOnUiThread {
+                    binding.progressBar.visibility = View.GONE
+                }
+                val intent = Intent(this@LoginActivity, UsersGroupActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 showToast(message = "Login onSuccess")
             }
             override fun onError(code: Int, error: String?) {
+                runOnUiThread {
+                    binding.progressBar.visibility = View.GONE
+                }
                 showToast(message = "Login onError $error")
             }
 
             override fun onProgress(progress: Int, status: String?) {
                 super.onProgress(progress, status)
-                showToast(message = "Login onError ")
             }
         })
     }

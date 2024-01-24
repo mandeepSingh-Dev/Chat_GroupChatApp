@@ -15,3 +15,18 @@ fun Context.showToast(message : String?) {
 fun Any.showLog(message : String? = "") {
 Log.d("LSTATEMENT_LOG",message.toString())
 }
+
+fun Any.getExpiryInSeconds(days : Int): Int {
+    val seconds = 60 //1 minute
+    val hours = 60 // 1 hour
+    val day = 24 //1 day.
+
+    val oneDaySeconds = seconds*hours*day
+
+    Log.d("fvvlkf",(oneDaySeconds*days).toString())
+
+    return oneDaySeconds*days
+}
+
+fun String.bearerToken() = "Bearer $this"
+

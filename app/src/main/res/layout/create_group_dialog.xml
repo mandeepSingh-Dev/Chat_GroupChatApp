@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:strokeWidth="2dp"
+
+    app:strokeColor="@color/yellow">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Group"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+            app:boxStrokeColor="@color/yellow"
+            app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/groupNameEdttxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group name"
+/>
+        </com.google.android.material.textfield.TextInputLayout>
+             <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+                 app:boxStrokeColor="@color/yellow"
+                 app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/descriptionEdttxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group description"
+/>
+        </com.google.android.material.textfield.TextInputLayout>
+             <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+                 app:boxStrokeColor="@color/yellow"
+                 app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/groupOwnerEdttxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            android:hint="Group owner"
+/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/allMembersPopUp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/yellow"
+        style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+        app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/allMembersPopUpedttxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group owner"
+            android:editable="false"
+            android:clickable="true"
+            android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/doneBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            />
+
+    </LinearLayout>
+
+
+
+
+
+</com.google.android.material.card.MaterialCardView>
