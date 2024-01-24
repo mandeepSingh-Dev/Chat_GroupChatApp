@@ -1,29 +1,23 @@
 package com.example.chat__groupchatapp.ui.dialogs
 
 import android.app.ActionBar.LayoutParams
-import android.content.pm.ActivityInfo.WindowLayout
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
-import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.fragment.app.DialogFragment
 import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.Widgets.BounceButton
 import com.example.chat__groupchatapp.Utils.showToast
-import com.example.chat__groupchatapp.data.remote.model.users.UserEntity
+import com.example.chat__groupchatapp.data.remote.model.user.response.UserEntity
 import com.example.chat__groupchatapp.databinding.CreateGroupDialogBinding
 import com.example.chat__groupchatapp.databinding.ItemsLayoutsBinding
-import com.example.chat__groupchatapp.databinding.ItemsSpinnerItemBinding
 import com.example.chat__groupchatapp.domain.model.UserSpinnerItem
 import com.example.chat__groupchatapp.ui.adapter.UserSpinnerAdapter
 
-class CreateChatGroupDialog(var ownerId : String, val membersList: MutableList<UserEntity>, val onCreateGroup: (String?,String?,String?,ArrayList<String>?,) -> Unit) : DialogFragment() {
+class CreateChatGroupDialog(var ownerId : String, val membersList: MutableList<UserEntity>, val onCreateGroup: (String?, String?, String?, ArrayList<String>?,) -> Unit) : DialogFragment() {
 
     lateinit var binding : CreateGroupDialogBinding
 

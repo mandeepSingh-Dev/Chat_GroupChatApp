@@ -1,8 +1,11 @@
 package com.example.chat__groupchatapp.data.remote
 
-import com.example.chat__groupchatapp.data.remote.model.register.RegisterUserRequestBody
-import com.example.chat__groupchatapp.data.remote.model.register.RegisterUserResponse
-import com.example.chat__groupchatapp.data.remote.model.users.UsersResponse
+import com.example.chat__groupchatapp.data.remote.model.group.createUser.request.CreateGroupRequestBody
+import com.example.chat__groupchatapp.data.remote.model.group.createUser.response.CreateGroupResponse
+import com.example.chat__groupchatapp.data.remote.model.group.groupDetails.response.GroupDetailsResponse
+import com.example.chat__groupchatapp.data.remote.model.user.request.register.RegisterUserRequestBody
+import com.example.chat__groupchatapp.data.remote.model.user.request.register.RegisterUserResponse
+import com.example.chat__groupchatapp.data.remote.model.user.response.UsersResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -12,6 +15,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 object RetrofitClient {
@@ -58,4 +62,10 @@ interface AgoraService
         @Query("limit") limit : String,
         @Query("cursor") sursor : String? = null
     ) : Response<UsersResponse>
+
+    @POST("chatgroups")
+    suspend fun createGroup(@Body createGroupRequestBody: CreateGroupRequestBody) : Response<CreateGroupResponse>
+
+    @GET("chatgroups/{group_ids}")
+    suspend fun getGroupDetails(@Path("group_ids") groupId : String?) : Response<GroupDetailsResponse>
 }

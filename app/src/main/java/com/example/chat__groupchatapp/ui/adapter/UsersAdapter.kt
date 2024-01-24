@@ -5,16 +5,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.example.chat__groupchatapp.data.remote.model.users.UserEntity
+import com.example.chat__groupchatapp.data.remote.model.user.response.UserEntity
 import com.example.chat__groupchatapp.databinding.UserItemlayoutBinding
 
-class UsersAdapter : ListAdapter<UserEntity, UsersAdapter.UsersViewHolders>(diffUtils){
+class UsersAdapter(val onClick : (UserEntity) -> Unit) : ListAdapter<UserEntity, UsersAdapter.UsersViewHolders>(diffUtils){
 
     inner class UsersViewHolders(val binding : UserItemlayoutBinding) : ViewHolder(binding.root){
 
         fun bind(userEntity: UserEntity)
         {
             binding.userNameTextView.text = userEntity.nickname ?: userEntity.username
+
+            binding.root.setOnClickListener {
+                onClick(userEntity)
+            }
         }
     }
 

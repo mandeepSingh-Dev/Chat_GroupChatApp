@@ -5,12 +5,14 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
+import com.example.chat__groupchatapp.R
 
 @Composable
 fun BounceButton(buttonText: String, onButtonClick : () -> Unit){
@@ -43,7 +48,7 @@ fun BounceButton(buttonText: String, onButtonClick : () -> Unit){
             interactionSource = remember { MutableInteractionSource() },
             indication = null,
             onClick = {
-                Log.d("vlkvf","fvknfjkvf")
+                Log.d("vlkvf", "fvknfjkvf")
             }
         )
         .pointerInput(buttonState) {
@@ -60,9 +65,11 @@ fun BounceButton(buttonText: String, onButtonClick : () -> Unit){
                     ButtonState.PRESSED
                 }
             }
-        }.scale(scale)
+        }
+        .scale(scale)
         , content = {
-            Text(text = buttonText)
+                Text(text = buttonText)
+
         })
 
 

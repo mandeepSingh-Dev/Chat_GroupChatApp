@@ -1,4 +1,4 @@
-package com.example.chat__groupchatapp.data.remote.model.users
+package com.example.chat__groupchatapp.data.remote.model.user.response
 
 data class UsersResponse(
     val action: String?,

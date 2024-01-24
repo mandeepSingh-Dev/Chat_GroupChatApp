@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chat__groupchatapp.AgoraChatHelper
 import com.example.chat__groupchatapp.AgoraTokenUtils.ChatTokenBuilder2
 import com.example.chat__groupchatapp.R
+import com.example.chat__groupchatapp.Utils.MGroupChangeListener
 import com.example.chat__groupchatapp.Utils.Widgets.BounceButton
 import com.example.chat__groupchatapp.Utils.bearerToken
 import com.example.chat__groupchatapp.Utils.getExpiryInSeconds
@@ -24,6 +25,8 @@ import com.example.chat__groupchatapp.databinding.ItemsSpinnerItemBinding
 import com.example.chat__groupchatapp.ui.adapter.GroupsAdapter
 import com.example.chat__groupchatapp.ui.adapter.UsersAdapter
 import com.example.chat__groupchatapp.ui.dialogs.CreateChatGroupDialog
+import io.agora.GroupChangeListener
+import io.agora.chat.Conversation
 import kotlinx.coroutines.launch
 
 class UsersGroupActivity : AppCompatActivity() {
@@ -32,12 +35,28 @@ class UsersGroupActivity : AppCompatActivity() {
     private var agoraChatHelper : AgoraChatHelper? = null
 
     private val usersAdapter : UsersAdapter by lazy {
-        UsersAdapter()
+        UsersAdapter(){userEntity ->
+            val intent = Intent(this,ChatActivity::class.java)
+            intent.putExtra("user",userEntity)
+            intent.putExtra("chat_type",Conversation.ConversationType.Chat.toString())
+            startActivity(intent)
+        }
     }
     private val groupAdapter : GroupsAdapter by lazy {
-        GroupsAdapter()
+        GroupsAdapter(){group ->
+            val intent = Intent(this,ChatActivity::class.java)
+            intent.putExtra("group_Id",group.groupId)
+            intent.putExtra("group_Name",group.groupName)
+            intent.putExtra("group_description",group.description)
+            intent.putExtra("group_owner",group.owner)
+            intent.putExtra("chat_type",Conversation.ConversationType.GroupChat.toString())
+
+            startActivity(intent)
+        }
     }
     var currentUser : String? = null
+
+    private val mGroupChangeListener = MGroupChangeListener()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +66,7 @@ class UsersGroupActivity : AppCompatActivity() {
 
         agoraChatHelper = AgoraChatHelper()
         agoraChatHelper?.setUpChatClient(this)
+        listenGroupChange()
         setUpRecyclerView()
 
         binding.logoutBtn.setContent {
@@ -89,6 +109,7 @@ class UsersGroupActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val groupList = agoraChatHelper?.getJoinedGroups()
+            Log.d("kjkjnknk",groupList?.size.toString())
             groupAdapter.submitList(groupList)
         }
 
@@ -131,10 +152,18 @@ class UsersGroupActivity : AppCompatActivity() {
                    agoraChatHelper?.createChatGroup(grpName.toString(),grpDesc.toString(), it.toTypedArray())
                }
 
-           }
-               .show(supportFragmentManager,CreateChatGroupDialog.TAG)
+           }.show(supportFragmentManager,CreateChatGroupDialog.TAG)
 
        }
+    }
+
+    private fun listenGroupChange(){
+     agoraChatHelper?.setGroupChangeListener(mGroupChangeListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        agoraChatHelper?.removeGroupChangeListener(mGroupChangeListener)
     }
 
 }

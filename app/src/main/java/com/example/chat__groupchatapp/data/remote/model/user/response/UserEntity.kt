@@ -1,5 +1,9 @@
-package com.example.chat__groupchatapp.data.remote.model.users
+package com.example.chat__groupchatapp.data.remote.model.user.response
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class UserEntity(
     val activated: Boolean?,
     val created: Long?,
@@ -8,4 +12,4 @@ data class UserEntity(
     val type: String?,
     val username: String?,
     val uuid: String?
-)
+): Parcelable

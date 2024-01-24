@@ -6,6 +6,7 @@ import android.util.Log
 import com.example.chat__groupchatapp.Utils.showLog
 import io.agora.CallBack
 import io.agora.ConnectionListener
+import io.agora.GroupChangeListener
 import io.agora.MessageListener
 import io.agora.ValueCallBack
 import io.agora.chat.ChatClient
@@ -198,8 +199,9 @@ class AgoraChatHelper(
     fun getCurrentUser() = chatClient?.currentUser
     fun isUserLoggedIn() = chatClient?.isLoggedInBefore
 
-    fun sendMessage(message: String?, toUserId : String, onCreateMessage : (ChatMessage) -> Unit) {
+    fun sendMessage(message: String?, toUserId : String, onCreateMessage : (ChatMessage) -> Unit, chatType : ChatType) {
 
+        Log.d("dkfnjkdvnd",message.toString())
         if(message == null || message == "null" || message.isNullOrEmpty()){
             onErrorr("Message is empty.")
             return
@@ -212,6 +214,8 @@ class AgoraChatHelper(
         }
 
         val chatMessage = ChatMessage.createTextSendMessage(message,toUserId)
+            chatMessage.chatType = chatType
+
         onCreateMessage(chatMessage)
 
         chatMessage.setMessageStatusCallback(object : CallBack{
@@ -231,13 +235,14 @@ class AgoraChatHelper(
     }
 
     @SuppressLint("SuspiciousIndentation")
-    suspend fun getAsyncFetchConverationFromServer(userId : String, fromMessageId : String = "") = withContext(Dispatchers.IO){
+    suspend fun getAsyncFetchConverationFromServer(userId : String, fromMessageId : String = "", chatType : Conversation.ConversationType) = withContext(Dispatchers.IO){
+
 
         var list = mutableListOf <ChatMessage>()
         Log.d("Fvfnvfv",userId.toString())
         //We need to paas converation Id of another User
         //example if we are user1 and are talking to user2 then we need to paas converationId of user2
-        chatClient?.chatManager()?.asyncFetchHistoryMessages(userId.lowercase(),Conversation.ConversationType.Chat,20,fromMessageId, null , object : ValueCallBack<CursorResult<ChatMessage>> {
+        chatClient?.chatManager()?.asyncFetchHistoryMessages(userId.lowercase(),chatType,20,fromMessageId, null , object : ValueCallBack<CursorResult<ChatMessage>> {
             override fun onSuccess(value: CursorResult<ChatMessage>?) {
                 CoroutineScope(Dispatchers.Main).launch {
                     Log.d("fbkmkbm", "onSuccess History messages")
@@ -305,17 +310,30 @@ class AgoraChatHelper(
 
     suspend fun getJoinedGroups(): MutableList<Group>? = withContext(Dispatchers.IO){
         chatClient?.groupManager()?.loadAllGroups()
-       return@withContext chatClient?.groupManager()?.allGroups
+       return@withContext chatClient?.groupManager()?.joinedGroupsFromServer
 
     }
 
     fun createChatGroup(groupName : String, groupDesc : String, allMembers : Array<String>){
 
-      val groupOptions =  GroupOptions().apply {
-            maxUsers = 3
-            style = GroupStyle.GroupStylePrivateMemberCanInvite
+        try {
+            val groupOptions = GroupOptions().apply {
+                maxUsers = 100
+                style = GroupStyle.GroupStylePrivateMemberCanInvite
+            }
+            chatClient?.groupManager()
+                ?.createGroup(groupName, groupDesc, allMembers, "No Reason", groupOptions,)
+        }catch (e:Exception){
+            showLog(e.message + " create Group error.")
         }
-        chatClient?.groupManager()?.createGroup(groupName,"",allMembers,"", groupOptions,)
+    }
+
+    fun setGroupChangeListener(groupChangeListener: GroupChangeListener){
+        chatClient?.groupManager()?.addGroupChangeListener(groupChangeListener)
+    }
+
+    fun removeGroupChangeListener(groupChangeListener: GroupChangeListener){
+        chatClient?.groupManager()?.removeGroupChangeListener(groupChangeListener)
     }
 
 }

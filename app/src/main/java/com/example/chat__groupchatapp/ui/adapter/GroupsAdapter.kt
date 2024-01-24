@@ -8,13 +8,16 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.chat__groupchatapp.databinding.GroupItemlayoutBinding
 import io.agora.chat.Group
 
-class GroupsAdapter : ListAdapter<Group, GroupsAdapter.GroupsViewHolders>(diffUtils){
+class GroupsAdapter(val onClick : (Group) -> Unit) : ListAdapter<Group, GroupsAdapter.GroupsViewHolders>(diffUtils){
 
     inner class GroupsViewHolders(val binding : GroupItemlayoutBinding) : ViewHolder(binding.root){
 
         fun bind(group: Group)
         {
             binding.userNameTextView.text = group.groupName ?: group.groupId
+            binding.root.setOnClickListener {
+                onClick(group)
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.chat__groupchatapp.data.remote.model.register
+package com.example.chat__groupchatapp.data.remote.model.user.request.register
 
 data class RegisterUserResponse(
     val action: String?,
