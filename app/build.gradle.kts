@@ -70,7 +70,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
-    implementation("io.agora.rtc:chat-sdk:1.2.1")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
@@ -78,6 +77,11 @@ dependencies {
 
     implementation("commons-codec:commons-codec:1.15")
 
-
+    //Agora Chat SDK
+    implementation("io.agora.rtc:chat-sdk:1.2.1")
+    //Agora Video sdk
+    implementation("io.agora.rtc:full-sdk:4.2.6")
+    //Agora Voice sdk
+    // implementation("io.agora.rtc:voice-sdk:4.2.6")
 
 }

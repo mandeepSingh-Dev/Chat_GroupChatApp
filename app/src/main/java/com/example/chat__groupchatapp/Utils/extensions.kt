@@ -2,7 +2,9 @@ package com.example.chat__groupchatapp.Utils
 
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,3 +32,8 @@ fun Any.getExpiryInSeconds(days : Int): Int {
 
 fun String.bearerToken() = "Bearer $this"
 
+fun View.showSnackbar(message: String = ""){
+    val snackbar = Snackbar.make(this,message, Snackbar.LENGTH_SHORT)
+    snackbar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
+    snackbar.show()
+}

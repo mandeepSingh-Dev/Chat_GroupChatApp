@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editMsgEdittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Edit your message here.."
+            android:layout_gravity="top"
+            android:gravity="top"
+            android:textColorHint="@color/material_on_background_disabled"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:lines="5"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/doneEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+
+</LinearLayout>

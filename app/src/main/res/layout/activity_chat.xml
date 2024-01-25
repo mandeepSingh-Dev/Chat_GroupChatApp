@@ -29,35 +29,78 @@
 
         <TextView
             android:id="@+id/contactName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="John Doe"
             android:textSize="18sp"
+            android:layout_weight="1"
             android:layout_marginStart="8dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/voiceCall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_phone_24"
+            android:background="#4A914545"
+            android:padding="5dp"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="center"/>
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/videoCall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_video_call_24"
+            android:background="#4A914545"
+            android:padding="5dp"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="center"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/membersIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_group_24"
+            android:background="#4A914545"
+            android:padding="5dp"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="center"/>
+
 
         <!-- Add more toolbar elements as needed -->
 
     </LinearLayout>
 
     <!-- Chat Messages RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatRecyclerView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/toolbar"
-        android:layout_above="@+id/messageInputContainer"
-        android:background="#F5F5F5"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp"
-        android:clipToPadding="false"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintBottom_toTopOf="@+id/messageInputContainer"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        >
+        <ProgressBar
+            android:id="@+id/paginatingProgressBar"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/messagesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:transcriptMode="alwaysScroll"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!-- Message Input Container -->
     <RelativeLayout

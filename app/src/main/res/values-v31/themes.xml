@@ -11,4 +11,19 @@
         <item name="android:windowSplashScreenBrandingImage">@color/white</item>
         <item name="android:windowSplashScreenAnimationDuration">@null</item>-->
     </style>
+
+    <style name="cardViewCorners" parent="Widget.MaterialComponents.CardView">
+        <item name="cornerSizeBottomLeft">15dp</item>
+        <item name="cornerSizeTopLeft">15dp</item>
+        <item name="cornerSizeTopRight">15dp</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="cardViewCorners2" parent="Widget.MaterialComponents.CardView">
+
+        <item name="cornerSizeBottomRight">15dp</item>
+        <item name="cornerSizeTopLeft">15dp</item>
+        <item name="cornerSizeTopRight">15dp</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
 </resources>

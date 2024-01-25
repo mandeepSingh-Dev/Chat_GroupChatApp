@@ -67,7 +67,7 @@ class AgoraChatHelper(
             chatClient = ChatClient.getInstance()
             chatClient?.init(context, chatOptions)
 
-
+            setUpChatListeners()
         }catch (e:Exception){
             onErrorr(e.message)
         }
@@ -334,6 +334,10 @@ class AgoraChatHelper(
 
     fun removeGroupChangeListener(groupChangeListener: GroupChangeListener){
         chatClient?.groupManager()?.removeGroupChangeListener(groupChangeListener)
+    }
+
+    suspend fun getGroupMembers(groupId : String) = withContext(Dispatchers.IO){
+        return@withContext chatClient?.groupManager()?.fetchGroupMembers(groupId,"",100)
     }
 
 }

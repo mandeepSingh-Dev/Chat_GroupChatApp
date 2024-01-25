@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:elevation="10dp"
+    app:cardElevation="10dp"
+    android:orientation="vertical"
+    app:cardUseCompatPadding="true"
+    app:strokeWidth="0dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        app:shapeAppearance="@style/cardViewCorners2"
+        android:elevation="10dp"
+        app:cardElevation="10dp"
+        app:cardUseCompatPadding="true"
+        app:strokeWidth="0dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            >
+            <TextView
+                android:id="@+id/usernameTextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FF0101"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp"
+                tools:text="Username"
+                />
+            <TextView
+                android:id="@+id/messageString"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="kvjvnjfv"
+                />
+            <TextView
+                android:id="@+id/messageIdString"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kvjvnjfv"
+                android:textSize="10sp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="end"
+                android:gravity="end"
+                />
+            <TextView
+                android:id="@+id/messageTimeString"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:text="kvjvnjfv"
+                android:layout_marginTop="3dp"
+                android:layout_gravity="end"
+                android:gravity="end" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
