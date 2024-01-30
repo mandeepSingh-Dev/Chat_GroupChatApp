@@ -1,11 +1,18 @@
-package com.example.chat__groupchatapp
+package com.example.chat__groupchatapp.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import android.telecom.Connection
+import android.telecom.Connection.PROPERTY_SELF_MANAGED
+import android.telecom.PhoneAccount
+import android.telecom.PhoneAccountHandle
+import android.telecom.TelecomManager
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,7 +20,9 @@ import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.example.MyConnectionService
 import com.example.agorademoapps.Util.RtcEventHandler
 import com.example.chat__groupchatapp.AgoraTokenUtils.RtcTokenBuilder2
 import com.example.chat__groupchatapp.Utils.TokenBuilder
@@ -60,6 +69,8 @@ class VideoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         uId = Random.nextInt(IntRange(1,1000))
+
+        showToast(intent.getStringExtra("local_uid").toString())
 
         binding.videoInfo.setText( "uid: $uId ChannelName:$channelName" )
         token = TokenBuilder.getRtcTokenOfUid(this,uId,channelName,RtcTokenBuilder2.Role.ROLE_PUBLISHER)
@@ -199,4 +210,31 @@ class VideoActivity : AppCompatActivity() {
         RtcEngine.destroy()
         rtcEngine = null
     }
+
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    fun buildPhoneAccount(){
+        val telecomManager = getSystemService(TELECOM_SERVICE) as TelecomManager
+        val componentName = ComponentName(this, MyConnectionService::class.java)
+        val phoneAccountHandle = PhoneAccountHandle(componentName, "AGORA_APP_TAG")
+        val phoneAccount = telecomManager.getPhoneAccount(phoneAccountHandle)
+        telecomManager.registerPhoneAccount(phoneAccount)
+
+
+       val connection = MyConnectionClass().let {
+            it.connectionProperties = PROPERTY_SELF_MANAGED
+            it.audioModeIsVoip = true
+           it
+        }
+
+        connection.setInitializing()
+        connection.setRinging()
+
+
+
+
+    }
+}
+
+class MyConnectionClass : Connection(){
+
 }

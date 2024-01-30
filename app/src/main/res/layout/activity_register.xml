@@ -32,6 +32,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="User"
+            android:inputType="number"
+            android:digits="1234567890"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+ <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nickNameTextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/usernameTextLayout"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nickNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
             android:inputType="textEmailAddress"
             />
 
@@ -45,7 +65,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/usernameTextLayout"
+        app:layout_constraintTop_toBottomOf="@id/nickNameTextLayout"
         >
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"

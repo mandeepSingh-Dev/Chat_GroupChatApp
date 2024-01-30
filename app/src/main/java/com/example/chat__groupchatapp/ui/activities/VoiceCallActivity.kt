@@ -13,6 +13,7 @@ import io.agora.chat.Conversation.ConversationType
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
+
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -54,7 +55,7 @@ class VoiceCallActivity : AppCompatActivity() {
         }
         binding.callerNameTextView.text = name
 
-        localUid = Random.nextInt(IntRange(1,30))
+        localUid = Random.nextInt(IntRange(1,100000000))
         tempToken = TokenBuilder.getRtcTokenOfUid(this,localUid,channelName,RtcTokenBuilder2.Role.ROLE_PUBLISHER)
 
         setUpRtcEngine()

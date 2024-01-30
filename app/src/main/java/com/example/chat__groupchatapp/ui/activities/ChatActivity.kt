@@ -16,7 +16,6 @@ import com.example.chat__groupchatapp.AgoraChatHelper
 import com.example.chat__groupchatapp.Utils.Widgets.BounceButton
 import com.example.chat__groupchatapp.Utils.showLog
 import com.example.chat__groupchatapp.Utils.showSnackbar
-import com.example.chat__groupchatapp.VideoActivity
 import com.example.chat__groupchatapp.data.remote.model.user.response.UserEntity
 import com.example.chat__groupchatapp.databinding.ActivityChatBinding
 import com.example.chat__groupchatapp.databinding.EditMsgDialogBinding
@@ -149,7 +148,10 @@ class ChatActivity : AppCompatActivity() {
         }
         binding.videoCall.setOnClickListener {
             if(chat_type == Conversation.ConversationType.Chat){
-                startActivity(Intent(this,VideoActivity::class.java))
+
+                val intent = Intent(this, VideoActivity::class.java)
+                intent.putExtra("local_uid",userEntity?.username)
+                startActivity(Intent(this, VideoActivity::class.java))
             }else{
                 startActivity(Intent(this,GroupVideoCallActivity::class.java))
             }

@@ -197,7 +197,7 @@ class AgoraChatHelper(
     }
 
     fun getCurrentUser() = chatClient?.currentUser
-    fun isUserLoggedIn() = chatClient?.isLoggedInBefore
+    fun isUserLoggedIn() = (chatClient?.isLoggedInBefore == true)  && (chatClient?.currentUser != null)
 
     fun sendMessage(message: String?, toUserId : String, onCreateMessage : (ChatMessage) -> Unit, chatType : ChatType) {
 
