@@ -6,4 +6,27 @@
     <string name="APP_ID">3b7f0443aa0f4ad4ab145c3044729318</string>
     <string name="APP_CERTIFICATE">13b22f34693341ac82cd76b516494fb3</string>
     <string name="some_label_for_my_connection_service">connection_service_for_agora</string>
+
+
+        <string name="username_or_pwd_miss">Username or password is empty</string>
+        <string name="sign_up_success">Sign up success!</string>
+        <string name="sign_in_success">Sign in success!</string>
+        <string name="sign_out_success">Sign out success!</string>
+        <string name="send_message_success">Send message success!</string>
+        <string name="enter_username">Enter username</string>
+        <string name="enter_password">Enter password</string>
+        <string name="sign_in">Sign in</string>
+        <string name="sign_out">Sign out</string>
+        <string name="sign_up">Sign up</string>
+        <string name="enter_to_username">Enter to username</string>
+        <string name="start_chat">Start chat</string>
+        <string name="enter_content">Enter content</string>
+        <string name="log_hint">Show log area...</string>
+        <string name="has_login_before">An account has been signed in, please sign out first and then sign in</string>
+        <string name="sign_in_first">Please sign in first</string>
+        <string name="not_find_send_name">Please enter the username who you want to send first!</string>
+
+
+
+
 </resources>

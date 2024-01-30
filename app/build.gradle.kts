@@ -54,6 +54,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
+    implementation(files("libs\\agora-rtm-sdk.jar"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -81,7 +82,10 @@ dependencies {
     implementation("io.agora.rtc:chat-sdk:1.2.1")
     //Agora Video sdk
     implementation("io.agora.rtc:full-sdk:4.2.6")
-    //Agora Voice sdk
+
+   // implementation("io.agora.rtm:rtm-sdk:2.1.7")
     // implementation("io.agora.rtc:voice-sdk:4.2.6")
+
+
 
 }

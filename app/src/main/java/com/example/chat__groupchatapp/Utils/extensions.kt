@@ -37,3 +37,15 @@ fun View.showSnackbar(message: String = ""){
     snackbar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
     snackbar.show()
 }
+
+fun getExpiryInSeconds(days : Int): Int {
+    val seconds = 60 //1 minute
+    val hours = 60 // 1 hour
+    val day = 24 //1 day.
+
+    val oneDaySeconds = seconds*hours*day
+
+    Log.d("fvvlkf",(oneDaySeconds*days).toString())
+
+    return oneDaySeconds*days
+}
