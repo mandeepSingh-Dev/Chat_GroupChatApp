@@ -4,9 +4,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT
 import com.example.chat__groupchatapp.AgoraChatHelper
 import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.getExpiryInSeconds
@@ -27,6 +29,11 @@ class SplashScreen : AppCompatActivity() {
         setContentView(binding.root)
 
         createNotificationChannel()
+
+        val intent = Intent(ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT)
+           val uri = Uri.fromParts("package", packageName, null)
+        intent.data = uri
+        startActivity(intent)
 
         agoraChatHelper = AgoraChatHelper()
         agoraChatHelper?.setUpChatClient(this)
