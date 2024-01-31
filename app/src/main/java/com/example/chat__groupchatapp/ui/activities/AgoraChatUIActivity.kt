@@ -2,6 +2,9 @@ package com.example.chat__groupchatapp.ui.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -394,5 +397,7 @@ class AgoraChatUIActivity : AppCompatActivity() {
         ChatClient.getInstance().chatManager().sendMessage(chatMessage)
 
     }
+
+
 
 }

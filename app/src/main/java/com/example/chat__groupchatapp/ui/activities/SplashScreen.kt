@@ -1,6 +1,10 @@
 package com.example.chat__groupchatapp.ui.activities
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.chat__groupchatapp.AgoraChatHelper
@@ -22,6 +26,8 @@ class SplashScreen : AppCompatActivity() {
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        createNotificationChannel()
+
         agoraChatHelper = AgoraChatHelper()
         agoraChatHelper?.setUpChatClient(this)
 
@@ -37,5 +43,13 @@ class SplashScreen : AppCompatActivity() {
         }
 
         getExpiryInSeconds(5)
+    }
+    fun createNotificationChannel(){
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(getString(R.string.default_notification_channel_id),getString(R.string.default_notification_channel_id),
+                NotificationManager.IMPORTANCE_HIGH)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 }
