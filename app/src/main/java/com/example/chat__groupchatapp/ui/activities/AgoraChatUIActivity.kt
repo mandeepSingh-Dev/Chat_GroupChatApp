@@ -65,7 +65,6 @@ class AgoraChatUIActivity : AppCompatActivity() {
 
     var fcmSenderId  = "264683372480"
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAgoraChatUiactivityBinding.inflate(layoutInflater)
@@ -100,7 +99,12 @@ class AgoraChatUIActivity : AppCompatActivity() {
         val type =  intent.getStringExtra("chat_type")
         chat_type = if(type == Conversation.ConversationType.Chat.toString()) Conversation.ConversationType.Chat else Conversation.ConversationType.GroupChat
         //When comes from User item
-        userEntity =  intent.getParcelableExtra("user", UserEntity::class.java)
+        userEntity = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+              intent.getParcelableExtra("user", UserEntity::class.java)
+        }else{
+            intent.getParcelableExtra<UserEntity>("user")
+        }
+
         //When comes from Group item.
         groupId = intent.getStringExtra("group_Id")
         group_Name =   intent.getStringExtra("group_Name")
