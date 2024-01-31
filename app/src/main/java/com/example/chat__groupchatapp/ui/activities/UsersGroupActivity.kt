@@ -22,7 +22,11 @@ import com.example.chat__groupchatapp.databinding.ActivityUsersGroupBinding
 import com.example.chat__groupchatapp.ui.adapter.GroupsAdapter
 import com.example.chat__groupchatapp.ui.adapter.UsersAdapter
 import com.example.chat__groupchatapp.ui.dialogs.CreateChatGroupDialog
+import io.agora.chat.ChatClient
+import io.agora.chat.ChatOptions
 import io.agora.chat.Conversation
+import io.agora.chat.uikit.EaseUIKit
+import io.agora.chat.uikit.chat.EaseChatFragment
 import kotlinx.coroutines.launch
 
 class UsersGroupActivity : AppCompatActivity() {
@@ -32,7 +36,8 @@ class UsersGroupActivity : AppCompatActivity() {
 
     private val usersAdapter : UsersAdapter by lazy {
         UsersAdapter(){userEntity ->
-            val intent = Intent(this,ChatActivity::class.java)
+           // val intent = Intent(this,ChatActivity::class.java)
+            val intent = Intent(this,AgoraChatUIActivity::class.java)
             intent.putExtra("user",userEntity)
             intent.putExtra("chat_type",Conversation.ConversationType.Chat.toString())
             startActivity(intent)
@@ -40,7 +45,9 @@ class UsersGroupActivity : AppCompatActivity() {
     }
     private val groupAdapter : GroupsAdapter by lazy {
         GroupsAdapter(){group ->
-            val intent = Intent(this,ChatActivity::class.java)
+
+          //  val intent = Intent(this,ChatActivity::class.java)
+              val intent = Intent(this,AgoraChatUIActivity::class.java)
             intent.putExtra("group_Id",group.groupId)
             intent.putExtra("group_Name",group.groupName)
             intent.putExtra("group_description",group.description)
@@ -183,4 +190,6 @@ class UsersGroupActivity : AppCompatActivity() {
 
         }
     }
+
+
 }

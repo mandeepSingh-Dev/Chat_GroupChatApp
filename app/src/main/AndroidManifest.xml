@@ -5,7 +5,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> <!-- Add alert window -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- Access to the internet -->
+    <!-- Access to the microphone -->
+    <!-- Access to the camera -->
+    <!-- Access to the tasks -->
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -19,7 +24,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" /> <!-- For Android 12 and above devices, the following permission is also required. -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.MANAGE_OWN_CALLS"/>
+    <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
 
     <application
         android:name=".MyApp"
@@ -32,12 +37,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Chat__GroupChatApp"
         tools:targetApi="31">
+
         <activity
-            android:name=".ui.activities.GroupVideoCallActivity"
+            android:name=".ui.activities.AgoraChatUIActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.activities.VideoActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".ui.activities.GroupVideoCallActivity"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".ui.activities.VideoActivity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".ui.activities.ChatActivity"
             android:exported="false" />
@@ -50,9 +59,25 @@
         <activity
             android:name=".ui.activities.LoginActivity"
             android:exported="true" />
+<!--        <activity-->
+<!--            android:name=".ui.activities.VoiceCallActivity"-->
+<!--            android:exported="true" />-->
         <activity
-            android:name=".ui.activities.VoiceCallActivity"
-            android:exported="true" />
+            android:name=".ui.activities.CallSingleBaseActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:excludeFromRecents="true"
+            android:label="@string/demo_activity_label_video_call"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.activities.CallMultipleBaseActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:excludeFromRecents="true"
+            android:label="@string/demo_activity_label_multi_call"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".ui.activities.SplashScreen"
             android:exported="true">
@@ -63,15 +88,41 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.example.MyConnectionService"
+
+        <service
+            android:name="com.example.MyConnectionService"
+            android:exported="true"
             android:label="@string/some_label_for_my_connection_service"
-            android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"
-            android:exported="true">
+            android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE">
             <intent-filter>
                 <action android:name="android.telecom.ConnectionService" />
             </intent-filter>
+        </service> <!-- After android 7.0, you should add -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
         </service>
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+        <receiver android:name=".MyBroadCastReceiver"
+             />
     </application>
 
 </manifest>

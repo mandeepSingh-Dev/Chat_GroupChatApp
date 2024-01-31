@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
+    id("com.google.gms.google-services")
 
 }
 
@@ -54,7 +55,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
-    implementation(files("libs\\agora-rtm-sdk.jar"))
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -81,11 +82,16 @@ dependencies {
     //Agora Chat SDK
     implementation("io.agora.rtc:chat-sdk:1.2.1")
     //Agora Video sdk
-    implementation("io.agora.rtc:full-sdk:4.2.6")
+   // implementation("io.agora.rtc:full-sdk:4.2.6")
 
    // implementation("io.agora.rtm:rtm-sdk:2.1.7")
     // implementation("io.agora.rtc:voice-sdk:4.2.6")
 
+    implementation("io.agora.rtc:chat-uikit:1.2.0")
+
+    implementation("io.agora.rtc:chat-callkit:1.2.0")
+
+    // implementation(files("libs\\agora-rtm-sdk.jar"))
 
 
 }

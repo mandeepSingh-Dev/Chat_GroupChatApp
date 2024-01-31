@@ -149,28 +149,28 @@ class ChatActivity : AppCompatActivity() {
         binding.videoCall.setOnClickListener {
             if(chat_type == Conversation.ConversationType.Chat){
 
-                val intent = Intent(this, VideoActivity::class.java)
-                intent.putExtra("local_uid",userEntity?.username)
-                startActivity(Intent(this, VideoActivity::class.java))
+           //     val intent = Intent(this, VideoActivity::class.java)
+             //   intent.putExtra("local_uid",userEntity?.username)
+            //    startActivity(Intent(this, VideoActivity::class.java))
             }else{
-                startActivity(Intent(this,GroupVideoCallActivity::class.java))
+              //  startActivity(Intent(this,GroupVideoCallActivity::class.java))
             }
         }
         binding.voiceCall.setOnClickListener {
             if(chat_type == Conversation.ConversationType.Chat){
-                val intent = Intent(this,VoiceCallActivity::class.java)
-                intent.putExtra("name",userEntity?.username)
-                intent.putExtra("chat_type",chat_type.toString())
-                startActivity(intent)
+             //   val intent = Intent(this,VoiceCallActivity::class.java)
+               // intent.putExtra("name",userEntity?.username)
+              //  intent.putExtra("chat_type",chat_type.toString())
+               // startActivity(intent)
             }else{
                 lifecycleScope.launch {
                     val crResult = agoraChatHelper.getGroupMembers(groupId.toString())
                     membersList = crResult?.data
-                    val intent = Intent(this@ChatActivity, VoiceCallActivity::class.java)
-                    intent.putExtra("name", group_Name)
-                    intent.putExtra("chat_type", chat_type.toString())
-                    intent.putExtra("membersList", membersList?.toTypedArray())
-                    startActivity(intent)
+               //     val intent = Intent(this@ChatActivity, VoiceCallActivity::class.java)
+              //      intent.putExtra("name", group_Name)
+//                    intent.putExtra("chat_type", chat_type.toString())
+//                    intent.putExtra("membersList", membersList?.toTypedArray())
+//                    startActivity(intent)
                 }
 
             }
