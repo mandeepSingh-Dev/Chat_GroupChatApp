@@ -1,38 +1,39 @@
 package com.example.chat__groupchatapp
 
+import android.app.ActivityManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.ui.tooling.data.ContextCache
-import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
-import com.example.chat__groupchatapp.ui.activities.SplashScreen
-import com.example.chat__groupchatapp.ui.activities.UsersGroupActivity
-import com.google.android.gms.tasks.Task
+import com.example.chat__groupchatapp.ui.activities.IncomingCallActivity
+import com.example.chat__groupchatapp.ui.activities.LoginActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.agora.chat.ChatClient
+import io.agora.chat.callkit.EaseCallKit
+
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
-        super.onMessageReceived(message)
-
-        Log.d("fvkjfjvnfj",message.notification?.title.toString() + " rfrrfrr")
-        createNotification()
-
-        val intent = Intent(this,MyBroadCastReceiver::class.java)
-        sendBroadcast(intent)
 
 
-      //  Toast.makeText(this,"Received",Toast.LENGTH_SHORT).show()
+        val activityIntent = Intent(this,MyBroadCastReceiver::class.java)
+        message.data .forEach {
+            activityIntent.putExtra(it.key,it.value)
+        }
+        sendBroadcast(activityIntent)
+
+
     }
+
 
     fun createNotification(){
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -42,52 +43,92 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
 
-        val fullScreenIntent = Intent(this,SplashScreen::class.java)
-        fullScreenIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        val pendingIntent = PendingIntent.getActivity(this,101,fullScreenIntent,PendingIntent.FLAG_MUTABLE)
+        val fullScreenIntent: Intent = Intent(this, LoginActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
 
-        val notification = NotificationCompat.Builder(this,getString(R.string.default_notification_channel_id))
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentTitle("Video Call")
-            .setContentTitle("Video Call initiated")
+        val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        val fullScreenPendingIntent = PendingIntent.getActivity(this, 3054, fullScreenIntent, flags)
+
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
+            .setContentTitle(getString(R.string.app_name))
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setContentIntent(pendingIntent)
-            .setFullScreenIntent(pendingIntent,true).build()
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentIntent(fullScreenPendingIntent)
+            .setOnlyAlertOnce(true)
+            .setFullScreenIntent(fullScreenPendingIntent, true)
 
-         notificationManager.notify(10,notification)
+        notificationManager.notify(1,builder.build())
+
     }
 
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d("vvkmfkvmf",token.toString())
        if(ChatClient.getInstance().isSdkInited) {
            ChatClient.getInstance().sendFCMTokenToServer(token)
        }
     }
 
     override fun handleIntent(intent: Intent?) {
-     //   super.handleIntent(intent)
 
-        createNotification()
+        intent?.extras?.keySet()?.forEach {
+            Log.d("fvlvkfvf",it.toString() + " -> " +intent?.extras?.get(it).toString())
+        }
 
-        val intent = Intent(this,MyBroadCastReceiver::class.java)
-        sendBroadcast(intent)
+        val activityIntent1 = Intent(this,MyBroadCastReceiver::class.java)
+
+        intent?.extras?.keySet()?.forEach {
+            activityIntent1.putExtra(it,intent.extras?.get(it).toString())
+        }
+
+        sendBroadcast(activityIntent1)
+
     }
 
-    override fun handleIntentOnMainThread(intent: Intent?): Boolean {
-        val intent = Intent(this,MyBroadCastReceiver::class.java)
+/*
+    override fun handleIntent(intent: Intent?) {
+     //  super.handleIntent(intent)
+*/
+/*
         createNotification()
-        sendBroadcast(intent)
-        return super.handleIntentOnMainThread(intent)
+         *//*
+
+        val alert = intent?.getStringExtra("alert")
+        if(alert?.contains("video") == true){
+            val intent1 = Intent(this, IncomingCallActivity::class.java)
+            intent1.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent1.putExtra("f",intent.getStringExtra("f"))
+            startActivity(intent1)
+        }else{
+            createNotification()
+        }
+
+        intent?.extras?.keySet()?.forEach {
+            Log.d("Ffkbnfkbnf",it + " -> "+  intent.extras?.get(it).toString() + " handleIntent")
+        }
     }
+*/
+
 }
 
 class MyBroadCastReceiver : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
-        Toast.makeText(context,"Received",Toast.LENGTH_SHORT).show()
+        Toast.makeText(context,"Received broadcast reciever",Toast.LENGTH_SHORT).show()
         createNotification(context)
+
+
+
+     /*    val intent1 = Intent(context,IncomingCallActivity::class.java)
+        intent1.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        intent1.setAction("android.intent.action.MAIN");
+        intent1.addCategory("android.intent.category.LAUNCHER");
+
+        intent?.extras?.let { intent1.putExtras(it) };
+        context?.startActivity(intent1) */
     }
 
     fun createNotification(context: Context?){
@@ -97,20 +138,35 @@ class MyBroadCastReceiver : BroadcastReceiver(){
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
+        val fullScreenIntent: Intent = Intent(context, IncomingCallActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
 
-        val fullScreenIntent = Intent(context,SplashScreen::class.java)
-        fullScreenIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        val pendingIntent = PendingIntent.getActivity(context,101,fullScreenIntent,PendingIntent.FLAG_MUTABLE)
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT
+        val fullScreenPendingIntent = PendingIntent.getActivity(context, 1, fullScreenIntent, flags)
 
-        val notification = NotificationCompat.Builder(context,context?.getString(R.string.default_notification_channel_id).toString())
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentTitle("Video Call")
-            .setContentTitle("Video Call initiated")
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, context.getString(R.string.default_notification_channel_id))
+            .setContentTitle(context.getString(R.string.app_name))
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setContentIntent(pendingIntent)
-            .setFullScreenIntent(pendingIntent,true).build()
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentIntent(fullScreenPendingIntent)
+            .setOnlyAlertOnce(true)
+            .setFullScreenIntent(fullScreenPendingIntent, true)
 
-        notificationManager.notify(10,notification)
+        notificationManager.notify(1,builder.build())
+
+        val intent = Intent(context,IncomingCallActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
+
+    }
+
+    fun isForeground(context: Context?,myPackage: String): Boolean {
+        val manager =context?.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        val runningTaskInfo = manager.getRunningTasks(1)
+        val componentInfo = runningTaskInfo[0].topActivity
+        return componentInfo?.packageName == myPackage
     }
 }

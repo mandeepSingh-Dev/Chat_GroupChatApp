@@ -1,19 +1,21 @@
 package com.example.chat__groupchatapp.ui.activities
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chat__groupchatapp.AgoraChatHelper
-import com.example.chat__groupchatapp.AgoraTokenUtils.ChatTokenBuilder2
 import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.MGroupChangeListener
 import com.example.chat__groupchatapp.Utils.Widgets.BounceButton
-import com.example.chat__groupchatapp.Utils.bearerToken
-import com.example.chat__groupchatapp.Utils.getExpiryInSeconds
 import com.example.chat__groupchatapp.Utils.showSnackbar
 import com.example.chat__groupchatapp.Utils.showToast
 import com.example.chat__groupchatapp.data.remote.RetrofitClient
@@ -22,11 +24,7 @@ import com.example.chat__groupchatapp.databinding.ActivityUsersGroupBinding
 import com.example.chat__groupchatapp.ui.adapter.GroupsAdapter
 import com.example.chat__groupchatapp.ui.adapter.UsersAdapter
 import com.example.chat__groupchatapp.ui.dialogs.CreateChatGroupDialog
-import io.agora.chat.ChatClient
-import io.agora.chat.ChatOptions
 import io.agora.chat.Conversation
-import io.agora.chat.uikit.EaseUIKit
-import io.agora.chat.uikit.chat.EaseChatFragment
 import kotlinx.coroutines.launch
 
 class UsersGroupActivity : AppCompatActivity() {
@@ -66,6 +64,8 @@ class UsersGroupActivity : AppCompatActivity() {
         binding = ActivityUsersGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpClickListeners()
+
+       // createNotification()
 
         agoraChatHelper = AgoraChatHelper()
         agoraChatHelper?.setUpChatClient(this)
@@ -190,6 +190,30 @@ class UsersGroupActivity : AppCompatActivity() {
 
         }
     }
+
+    fun createNotification(){
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(getString(R.string.default_notification_channel_id),"Channel Name", NotificationManager.IMPORTANCE_HIGH)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+
+        val fullScreenIntent = Intent(this,LoginActivity::class.java)
+       // fullScreenIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        val fullScreenPendingIntent = PendingIntent.getActivity(this,0,fullScreenIntent, PendingIntent.FLAG_IMMUTABLE)
+
+        val notification = NotificationCompat.Builder(this,getString(R.string.default_notification_channel_id))
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentTitle("New message.")
+            .setContentText("Hello")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_CALL)
+            .setFullScreenIntent(fullScreenPendingIntent,true)
+
+
+        notificationManager.notify("FullScreen",10,notification.build())
+    }
+
 
 
 }

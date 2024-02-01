@@ -309,7 +309,7 @@ class AgoraChatHelper(
     }
 
     suspend fun getJoinedGroups(): MutableList<Group>? = withContext(Dispatchers.IO){
-        if(chatClient?.currentUser != null) {
+        if(chatClient?.currentUser != null && chatClient?.isLoggedInBefore == true) {
             chatClient?.groupManager()?.loadAllGroups()
             return@withContext chatClient?.groupManager()?.joinedGroupsFromServer
         }else{

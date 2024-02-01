@@ -2,34 +2,27 @@ package com.example.chat__groupchatapp.ui.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chat__groupchatapp.AgoraTokenUtils.RtcTokenBuilder2
 import com.example.chat__groupchatapp.AgoraUiKitUtils.PermissionsManager
-import com.example.chat__groupchatapp.MyBroadCastReceiver
 import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.TokenBuilder
+import com.example.chat__groupchatapp.Utils.getExpiryInSeconds
 import com.example.chat__groupchatapp.data.remote.model.user.response.UserEntity
 import com.example.chat__groupchatapp.databinding.ActivityAgoraChatUiactivityBinding
+import com.example.chat__groupchatapp.ui.fagments.CustomEaseChatFragment
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailabilityLight
 import com.google.firebase.messaging.FirebaseMessaging
 import io.agora.CallBack
-import io.agora.MessageListener
 import io.agora.ValueCallBack
 import io.agora.chat.ChatClient
 import io.agora.chat.ChatMessage
 import io.agora.chat.ChatOptions
 import io.agora.chat.Conversation
-import io.agora.chat.PushConfigs
 import io.agora.chat.TextMessageBody
 import io.agora.chat.callkit.EaseCallKit
 import io.agora.chat.callkit.bean.EaseCallUserInfo
@@ -44,7 +37,6 @@ import io.agora.chat.uikit.EaseUIKit
 import io.agora.chat.uikit.chat.EaseChatFragment
 import io.agora.chat.uikit.chat.interfaces.OnMessageSendCallBack
 import io.agora.chat.uikit.menu.EaseChatType
-import io.agora.chat.uikit.utils.EaseFileUtils
 import io.agora.push.PushConfig
 import io.agora.push.PushHelper
 import io.agora.push.PushListener
@@ -55,6 +47,7 @@ import org.json.JSONObject
 
 class AgoraChatUIActivity : AppCompatActivity() {
 
+    private var channel: String? = null
     private var group_Name: String? = null
     private var groupId: String?= null
     private var group_description: String?= null
@@ -99,6 +92,8 @@ class AgoraChatUIActivity : AppCompatActivity() {
         easeCallKit = EaseCallKit.getInstance()
         easeUIKit =  EaseUIKit.getInstance()
 
+
+
         val type =  intent.getStringExtra("chat_type")
         chat_type = if(type == Conversation.ConversationType.Chat.toString()) Conversation.ConversationType.Chat else Conversation.ConversationType.GroupChat
         //When comes from User item
@@ -123,7 +118,7 @@ class AgoraChatUIActivity : AppCompatActivity() {
         initChatUISDK()
         initAgoraCallKitSdk()
 
-        initFcmwithChatClient()
+        initFcmWithChatClient()
        // Log.d("fvnbknkgjbgb",PushHelper.getInstance().pushToken.toString())
         PushHelper.getInstance().register()
 
@@ -153,21 +148,39 @@ class AgoraChatUIActivity : AppCompatActivity() {
             userInfoMap2["name1"] = userEntity?.username.toString()
 
 
+            val pushObject = JSONObject()
+            try{
+                //When app is in forground then set title to default title key of Agora (em_push_title)
 
-            easeCallKit.startSingleCall(EaseCallType.SINGLE_VIDEO_CALL,userEntity?.username,null,CallSingleBaseActivity::class.java)
+                //When app is in forground then set content to default content key of Agora (em_push_content)
+                //This is custom key added in data object.
+                pushObject.put("chatType",EaseCallType.SINGLE_VIDEO_CALL)
+                pushObject.put("channel",easeCallKit.channelName)
+
+                /*   pushObject.put("alert",message?.body?: " ALERT EMPTY")
+                  titleArgs.put("value1")
+                  pushObject.put("Title", titleArgs)
+                  contentArgs.put("value1")
+                  pushObject.put("Content",contentArgs) */
+            }catch (e:Exception){
+                Log.d("Fknbkjbg",e.message.toString())
+            }
+
+            //  message?.setAttribute("em_push_template",pushObject)
+            //This em_apns_ext key is used for pushNotification ext field.
+            val hashMap = HashMap<String,Any>()
+            hashMap.put("em_apns_ext",pushObject)
+            //  hashMap.put("em_force_notification",pushObject)
+
+
+            easeCallKit.startSingleCall(EaseCallType.SINGLE_VIDEO_CALL,userEntity?.username,hashMap,CallSingleBaseActivity::class.java)
+
+
 
         }
         easeCallKit.setCallKitListener(easeCallKitListener)
 
-        binding.push.setOnClickListener {
-            sendChatMessage()
-        }
 
-        ChatClient.getInstance().chatManager().addMessageListener(object : MessageListener{
-            override fun onMessageReceived(messages: MutableList<ChatMessage>?) {
-               sendBroadcast(Intent(this@AgoraChatUIActivity,MyBroadCastReceiver::class.java))
-            }
-        })
 
     }
 
@@ -206,6 +219,8 @@ class AgoraChatUIActivity : AppCompatActivity() {
             }
             })
             .showNickname(true)
+        easeChatFragmentBuilder.setCustomFragment(CustomEaseChatFragment())
+
 
         val easeChatFragment = easeChatFragmentBuilder.build()
         supportFragmentManager.beginTransaction().replace(binding.flFragment.id,easeChatFragment).commit()
@@ -221,7 +236,7 @@ class AgoraChatUIActivity : AppCompatActivity() {
         return true
     }
 
-    fun initAgoraCallKitSdk(){
+    private fun initAgoraCallKitSdk(){
         val easeCallKitConfig = EaseCallKitConfig()
             easeCallKitConfig.callTimeOut = 30*1000
         easeCallKitConfig.agoraAppId = getString(R.string.APP_ID)
@@ -229,15 +244,19 @@ class AgoraChatUIActivity : AppCompatActivity() {
 
 
 
+
+
         val userInfoMap: MutableMap<String, EaseCallUserInfo> = HashMap()
-        userInfoMap["***"] = EaseCallUserInfo("****", null)
+        userInfoMap["***"] = EaseCallUserInfo("***", null)
         userInfoMap["***"] = EaseCallUserInfo("****", null)
         easeCallKitConfig.setUserInfoMap(userInfoMap)
 
        easeCallKit.init(applicationContext,easeCallKitConfig)
+
        easeCallKit.registerVideoCallClass(CallSingleBaseActivity::class.java)
        easeCallKit.registerMultipleVideoClass(CallMultipleBaseActivity::class.java)
 
+        easeCallKit.notifier
 
 
     }
@@ -275,6 +294,8 @@ class AgoraChatUIActivity : AppCompatActivity() {
         ) {
             super.onGenerateRTCToken(userId, channelName, callback)
 
+            channel = channelName
+
             val token = TokenBuilder.getRtcTokenOfUid(this@AgoraChatUIActivity,userId?.toInt() ?: 0,channelName.toString(),RtcTokenBuilder2.Role.ROLE_PUBLISHER)
 
             callback?.onSetToken(token, userId?.toInt()?: 0)
@@ -291,6 +312,8 @@ class AgoraChatUIActivity : AppCompatActivity() {
 
         override fun onInViteCallMessageSent() {
             Log.d("fvmkf3232mv","onInViteCallMessageSent")
+            Log.d("fkbmkbmf",channel.toString())
+           // sendChatMessage()
         }
 
         override fun onRemoteUserJoinChannel(
@@ -308,7 +331,7 @@ class AgoraChatUIActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SuspiciousIndentation")
-    private fun initFcmwithChatClient(){
+    private fun initFcmWithChatClient(){
 
         val chatOptions = ChatOptions()
         chatOptions.appKey = getString(R.string.APP_KEY)
@@ -316,12 +339,9 @@ class AgoraChatUIActivity : AppCompatActivity() {
         val pushConfigBuilder =  PushConfig.Builder(applicationContext)
         pushConfigBuilder.enableFCM(fcmSenderId)
 
-
         chatOptions.pushConfig = pushConfigBuilder.build()
 
         ChatClient.getInstance().init(applicationContext,chatOptions)
-
-
 
 
       val isAvaialble =   GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS
@@ -359,24 +379,41 @@ class AgoraChatUIActivity : AppCompatActivity() {
     fun sendChatMessage(){
         val chatMessage = ChatMessage.createSendMessage(ChatMessage.Type.TXT)
         val textMessage = TextMessageBody("message content")
-        chatMessage.to = userEntity?.username
 
         val pushObject = JSONObject()
         val titleArgs = JSONArray()
         val contentArgs = JSONArray()
 
+        //If dont want to push notification to message chatType only then paas "null" to to (to is username).
+        //  message?.to = "null"
+
+
         try{
-            pushObject.put("Template_Name","test2")
-            titleArgs.put("value1")
-            pushObject.put("Title", titleArgs)
-            contentArgs.put("value1")
-            pushObject.put("Content",contentArgs)
+            //This is custom key added in data object.
+            pushObject.put("alert","video call started")
+            //When app is in forground then set title to default title key of Agora (em_push_title)
+            //When app is in forground then set content to default content key of Agora (em_push_content)
+            //This is custom key added in data object.
+            pushObject.put("chatType",chatMessage.type.toString())
+            pushObject.put("channel",channel)
+            /*   pushObject.put("alert",message?.body?: " ALERT EMPTY")
+              titleArgs.put("value1")
+              pushObject.put("Title", titleArgs)
+              contentArgs.put("value1")
+              pushObject.put("Content",contentArgs) */
         }catch (e:Exception){
             Log.d("Fknbkjbg",e.message.toString())
         }
 
-        chatMessage.setAttribute("em_push_template",pushObject)
+        //  message?.setAttribute("em_push_template",pushObject)
+        //This em_apns_ext key is used for pushNotification ext field.
+
+        chatMessage.to = userEntity?.username
+
         chatMessage.body = textMessage
+
+        chatMessage?.setAttribute("em_apns_ext",pushObject)
+        chatMessage?.setAttribute("em_force_notification", true);
 
         chatMessage.setMessageStatusCallback(object: CallBack{
             override fun onSuccess() {
