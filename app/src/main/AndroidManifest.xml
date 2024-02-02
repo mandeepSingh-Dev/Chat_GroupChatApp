@@ -49,12 +49,15 @@
         android:theme="@style/Theme.Chat__GroupChatApp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activities.LiveStreamingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.IncomingCallActivity"
             android:exported="true"
             android:showForAllUsers="true"
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
-            android:turnScreenOn="true"/>
+            android:turnScreenOn="true" />
         <activity
             android:name=".ui.activities.AgoraChatUIActivity"
             android:exported="false" /> <!-- <activity -->

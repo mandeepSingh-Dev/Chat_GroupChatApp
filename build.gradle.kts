@@ -1,3 +1,5 @@
+import java.net.URI
+
 buildscript {
     dependencies {
         classpath("com.google.gms:google-services:4.4.0")
@@ -7,4 +9,6 @@ buildscript {
 plugins {
     id("com.android.application") version "7.4.1" apply false
     id("org.jetbrains.kotlin.android") version "1.9.20" apply false
+
 }
+

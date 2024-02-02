@@ -27,6 +27,7 @@ class IncomingCallActivity : EaseCallBaseActivity() {
         super.onCreate(savedInstanceState)
         binding = EaseCallActivityCommingCallBinding.inflate(layoutInflater)
         setContentView(binding.root)
+/*
 
         val t = intent.getStringExtra("alert")
         Log.d("fbkmkbbnm",t.toString())
@@ -34,6 +35,7 @@ class IncomingCallActivity : EaseCallBaseActivity() {
         intent?.extras?.keySet()?.forEach {
             Log.d("lbmkbmgb",it.toString() + " -->>   "+ intent.extras?.get(it))
         }
+*/
 
 
 /*
@@ -58,29 +60,33 @@ class IncomingCallActivity : EaseCallBaseActivity() {
 
 */
 
-
 /*
-        // Start a 1V1 call
-        val intent: Intent = Intent(mContext, curCallCls).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val bundle = Bundle()
-        EaseCallKit.isComingCall = false
-        bundle.putBoolean("isComingCall", true)
-        bundle.putString("username", user)
-        channelName = EaseCallKitUtils.getRandomString(10)
-        bundle.putString("channelName", channelName)
-        intent.putExtras(bundle)
-        mContext.startActivity(intent)
+
+        try {
+            // Start a 1V1 call
+            val intent: Intent = Intent(this, CallSingleBaseActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val bundle = Bundle()
+            bundle.putBoolean("isComingCall", true)
+            bundle.putString("username", "2")
+            var channelName = EaseCallKitUtils.getRandomString(10)
+            bundle.putString("channelName", channelName)
+            intent.putExtras(bundle)
+            startActivity(intent)
+            finish()
+        }catch (e:Exception){
+            Log.d("fbkmfmkbmfb",e.message.toString())
+        }
 */
 
 
-
-        EaseCallKit.getInstance().setCallKitListener(easeCallKitListener)
+     //   EaseCallKit.getInstance().setCallKitListener(easeCallKitListener)
 
 
 
 
     }
-    val easeCallKitListener = object : EaseCallKitListener {
+    private val easeCallKitListener = object : EaseCallKitListener {
         override fun onInviteUsers(
             callType: EaseCallType?,
             existMembers: Array<out String>?,

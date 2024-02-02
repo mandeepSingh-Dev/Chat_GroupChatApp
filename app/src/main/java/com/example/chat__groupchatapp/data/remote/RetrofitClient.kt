@@ -2,11 +2,9 @@ package com.example.chat__groupchatapp.data.remote
 
 import android.content.Context
 import android.util.Log
-import com.example.chat__groupchatapp.AgoraTokenUtils.ChatTokenBuilder2
-import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.TokenBuilder
 import com.example.chat__groupchatapp.Utils.bearerToken
-import com.example.chat__groupchatapp.Utils.getExpiryInSeconds
+import com.example.chat__groupchatapp.data.remote.model.FirebaseNotificationBody
 import com.example.chat__groupchatapp.data.remote.model.group.createUser.request.CreateGroupRequestBody
 import com.example.chat__groupchatapp.data.remote.model.group.createUser.response.CreateGroupResponse
 import com.example.chat__groupchatapp.data.remote.model.group.groupDetails.response.GroupDetailsResponse
@@ -22,10 +20,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
-import kotlin.coroutines.coroutineContext
 
 object RetrofitClient {
     var retrofitInstance : Retrofit? = null
@@ -97,5 +95,8 @@ interface AgoraService
      @DELETE("chatgroups/{group_id}")
     suspend fun deleteGroup(@Path("group_id") groupId : String?)
 
+    @Headers("Authorization: key=AAAAPaBbv8A:APA91bFzjr8bnd42xeL0shPGLDt2DNYFPQXGfGqHXAnapwS3_RjG4josVqkgM8fJ6wcnpjKbiCzUQeB4pliL-cmwS60DxDMPAfoS89w0Bx3vtmVAMYsG_Y9TfcNXmgDkCT93SjWDJ0Is")
+    @POST("https://fcm.googleapis.com/fcm/send")
+    suspend fun sendFCMNotification(@Body firebaseNotificationBody: FirebaseNotificationBody)
 
 }

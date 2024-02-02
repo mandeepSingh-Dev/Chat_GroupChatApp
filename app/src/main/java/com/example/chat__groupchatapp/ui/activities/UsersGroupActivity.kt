@@ -1,5 +1,6 @@
 package com.example.chat__groupchatapp.ui.activities
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,22 +14,46 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chat__groupchatapp.AgoraChatHelper
+import com.example.chat__groupchatapp.AgoraTokenUtils.RtcTokenBuilder2
 import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.MGroupChangeListener
+import com.example.chat__groupchatapp.Utils.TokenBuilder
 import com.example.chat__groupchatapp.Utils.Widgets.BounceButton
 import com.example.chat__groupchatapp.Utils.showSnackbar
 import com.example.chat__groupchatapp.Utils.showToast
 import com.example.chat__groupchatapp.data.remote.RetrofitClient
+import com.example.chat__groupchatapp.data.remote.model.FirebaseNotificationBody
+import com.example.chat__groupchatapp.data.remote.model.Notification
+import com.example.chat__groupchatapp.data.remote.model.NotificationData
 import com.example.chat__groupchatapp.data.remote.model.group.createUser.request.CreateGroupRequestBody
 import com.example.chat__groupchatapp.databinding.ActivityUsersGroupBinding
 import com.example.chat__groupchatapp.ui.adapter.GroupsAdapter
 import com.example.chat__groupchatapp.ui.adapter.UsersAdapter
 import com.example.chat__groupchatapp.ui.dialogs.CreateChatGroupDialog
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailabilityLight
+import com.google.firebase.messaging.FirebaseMessaging
+import io.agora.CallBack
+import io.agora.chat.ChatClient
+import io.agora.chat.ChatOptions
 import io.agora.chat.Conversation
+import io.agora.chat.callkit.EaseCallKit
+import io.agora.chat.callkit.bean.EaseCallUserInfo
+import io.agora.chat.callkit.general.EaseCallEndReason
+import io.agora.chat.callkit.general.EaseCallError
+import io.agora.chat.callkit.general.EaseCallKitConfig
+import io.agora.chat.callkit.general.EaseCallType
+import io.agora.chat.callkit.listener.EaseCallGetUserAccountCallback
+import io.agora.chat.callkit.listener.EaseCallKitListener
+import io.agora.chat.callkit.listener.EaseCallKitTokenCallback
+import io.agora.chat.uikit.EaseUIKit
+import io.agora.push.PushConfig
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class UsersGroupActivity : AppCompatActivity() {
 
+    private var channel: String? = null
     lateinit var binding : ActivityUsersGroupBinding
     private var agoraChatHelper : AgoraChatHelper? = null
 
@@ -64,6 +89,12 @@ class UsersGroupActivity : AppCompatActivity() {
         binding = ActivityUsersGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpClickListeners()
+
+
+        initChatUISDK()
+        initAgoraCallKitSdk()
+        initFcmWithChatClient()
+
 
        // createNotification()
 
@@ -111,6 +142,9 @@ class UsersGroupActivity : AppCompatActivity() {
             Log.d("kjkjnknk",groupList?.size.toString())
             groupAdapter.submitList(groupList)
         }
+
+        EaseCallKit.getInstance().setCallKitListener(easeCallKitListener)
+
 
     }
     fun setUpRecyclerView(){
@@ -187,7 +221,6 @@ class UsersGroupActivity : AppCompatActivity() {
             }catch (e:Exception){
                 binding.root.showSnackbar(message = e.message.toString())
             }
-
         }
     }
 
@@ -214,6 +247,156 @@ class UsersGroupActivity : AppCompatActivity() {
         notificationManager.notify("FullScreen",10,notification.build())
     }
 
+    var fcmSenderId  = "264683372480"
+
+
+    @SuppressLint("SuspiciousIndentation")
+    private fun initFcmWithChatClient(){
+
+        val chatOptions = ChatOptions()
+        chatOptions.appKey = getString(R.string.APP_KEY)
+
+        val pushConfigBuilder =  PushConfig.Builder(applicationContext)
+        pushConfigBuilder.enableFCM(fcmSenderId)
+
+        chatOptions.pushConfig = pushConfigBuilder.build()
+
+        ChatClient.getInstance().init(applicationContext,chatOptions)
+
+
+        val isAvaialble =   GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS
+        Log.d("fvknvjfnv",isAvaialble.toString())
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if(it.isSuccessful){
+                Log.d("fbkgmnmnbkgmng",it.result.toString())
+                ChatClient.getInstance().sendFCMTokenToServer(it.result)
+
+               val fcmBody = FirebaseNotificationBody(to = it.result, data = NotificationData(hello = "HELOO",alert = "TESTING MESSAGE",chatType = "CHATtYPE"), notification = Notification("title","content"))
+
+                lifecycleScope.launch {
+                    RetrofitClient.getAgoraService(this@UsersGroupActivity)?.sendFCMNotification(fcmBody)
+                }
+                ChatClient.getInstance().pushManager().bindDeviceToken(fcmSenderId,it.result,object : CallBack{
+                    override fun onSuccess() {
+                        Log.d("gfkbngjbng","succes")
+                    }
+
+                    override fun onError(code: Int, error: String?) {
+                        Log.d("gfkbngjbng","succes")
+                    }
+
+                    override fun onProgress(progress: Int, status: String?) {
+                        super.onProgress(progress, status)
+                        Log.d("gfkbngjbng","succes")
+                    }
+                })
+            }else{
+                Log.d("fvknfkvnfv",it.exception?.message.toString() + " error")
+            }
+        }
+
+
+    }
+    fun initChatUISDK(){
+        val  chatoptions = ChatOptions()
+        chatoptions.appKey = getString(R.string.APP_KEY)
+        chatoptions.requireDeliveryAck = true
+        chatoptions.autoLogin = true
+        EaseUIKit.getInstance().init(this,chatoptions)
+    }
+
+    private fun initAgoraCallKitSdk(){
+        val easeCallKitConfig = EaseCallKitConfig()
+        easeCallKitConfig.callTimeOut = 15
+        easeCallKitConfig.agoraAppId = getString(R.string.APP_ID)
+        easeCallKitConfig.isEnableRTCToken = true
+
+        val userInfoMap: MutableMap<String, EaseCallUserInfo> = HashMap()
+        userInfoMap["***"] = EaseCallUserInfo("***", null)
+        userInfoMap["***"] = EaseCallUserInfo("****", null)
+        easeCallKitConfig.setUserInfoMap(userInfoMap)
+
+        EaseCallKit.getInstance().init(applicationContext,easeCallKitConfig)
+
+        EaseCallKit.getInstance().registerVideoCallClass(CallSingleBaseActivity::class.java)
+        EaseCallKit.getInstance().registerMultipleVideoClass(CallMultipleBaseActivity::class.java)
+    }
+    
+    
+
+    val easeCallKitListener = object : EaseCallKitListener {
+        override fun onInviteUsers(
+            callType: EaseCallType?,
+            existMembers: Array<out String>?,
+            ext: JSONObject?,
+        ) {
+            Log.d("fvmkf3232mv","onInviteIsers")
+        }
+
+        override fun onEndCallWithReason(
+            callType: EaseCallType?,
+            channelName: String?,
+            reason: EaseCallEndReason?,
+            callTime: Long,
+        ) {
+            Log.d("fvmkf3232mv","onEndCallWithReason")
+        }
+
+        override fun onReceivedCall(
+            callType: EaseCallType?,
+            fromUserId: String?,
+            ext: JSONObject?,
+        ) {
+            Log.d("fvmkf3232mv","onReceivedCall")
+        }
+
+        override fun onGenerateRTCToken(
+            userId: String?,
+            channelName: String?,
+            callback: EaseCallKitTokenCallback?,
+        ) {
+            super.onGenerateRTCToken(userId, channelName, callback)
+
+            channel = channelName
+
+            val token = TokenBuilder.getRtcTokenOfUid(this@UsersGroupActivity,userId?.toInt() ?: 0,channelName.toString(),
+                RtcTokenBuilder2.Role.ROLE_PUBLISHER)
+
+            callback?.onSetToken(token, userId?.toInt()?: 0)
+        }
+
+        override fun onCallError(type: EaseCallError?, errorCode: Int, description: String?) {
+
+            Log.d("fbfmbkfbmfg",type?.name.toString())
+            Log.d("fbfmbkfbmfg",type.toString())
+            Log.d("fbfmbkfbmfg",description.toString())
+            Log.d("fbfmbkfbmfg",errorCode.toString())
+            Log.d("fvmkf3232mv","onCallError")
+        }
+
+        override fun onInViteCallMessageSent() {
+            Log.d("fvmkf3232mv","onInViteCallMessageSent")
+            Log.d("fkbmkbmf",channel.toString())
+            // sendChatMessage()
+        }
+
+        override fun onRemoteUserJoinChannel(
+            channelName: String?,
+            userName: String?,
+            uid: Int,
+            callback: EaseCallGetUserAccountCallback?,
+        ) {
+            Log.d("fvmkf3232mv","onRemoteUserJoinChannel")
+        }
+
+        override fun onUserInfoUpdate(userName: String?) {
+            super.onUserInfoUpdate(userName)
+        }
+    }
+
+    
+    
 
 
 }
