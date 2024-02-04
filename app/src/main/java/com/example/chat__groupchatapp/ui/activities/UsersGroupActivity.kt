@@ -37,15 +37,15 @@ import io.agora.CallBack
 import io.agora.chat.ChatClient
 import io.agora.chat.ChatOptions
 import io.agora.chat.Conversation
-import io.agora.chat.callkit.EaseCallKit
-import io.agora.chat.callkit.bean.EaseCallUserInfo
-import io.agora.chat.callkit.general.EaseCallEndReason
-import io.agora.chat.callkit.general.EaseCallError
-import io.agora.chat.callkit.general.EaseCallKitConfig
-import io.agora.chat.callkit.general.EaseCallType
-import io.agora.chat.callkit.listener.EaseCallGetUserAccountCallback
-import io.agora.chat.callkit.listener.EaseCallKitListener
-import io.agora.chat.callkit.listener.EaseCallKitTokenCallback
+//import io.agora.chat.callkit.EaseCallKit
+//import io.agora.chat.callkit.bean.EaseCallUserInfo
+//import io.agora.chat.callkit.general.EaseCallEndReason
+//import io.agora.chat.callkit.general.EaseCallError
+//import io.agora.chat.callkit.general.EaseCallKitConfig
+//import io.agora.chat.callkit.general.EaseCallType
+//import io.agora.chat.callkit.listener.EaseCallGetUserAccountCallback
+//import io.agora.chat.callkit.listener.EaseCallKitListener
+//import io.agora.chat.callkit.listener.EaseCallKitTokenCallback
 import io.agora.chat.uikit.EaseUIKit
 import io.agora.push.PushConfig
 import kotlinx.coroutines.launch
@@ -92,7 +92,7 @@ class UsersGroupActivity : AppCompatActivity() {
 
 
         initChatUISDK()
-        initAgoraCallKitSdk()
+       // initAgoraCallKitSdk()
         initFcmWithChatClient()
 
 
@@ -143,7 +143,7 @@ class UsersGroupActivity : AppCompatActivity() {
             groupAdapter.submitList(groupList)
         }
 
-        EaseCallKit.getInstance().setCallKitListener(easeCallKitListener)
+       // EaseCallKit.getInstance().setCallKitListener(easeCallKitListener)
 
 
     }
@@ -275,7 +275,7 @@ class UsersGroupActivity : AppCompatActivity() {
                val fcmBody = FirebaseNotificationBody(to = it.result, data = NotificationData(hello = "HELOO",alert = "TESTING MESSAGE",chatType = "CHATtYPE"), notification = Notification("title","content"))
 
                 lifecycleScope.launch {
-                    RetrofitClient.getAgoraService(this@UsersGroupActivity)?.sendFCMNotification(fcmBody)
+                  //  RetrofitClient.getAgoraService(this@UsersGroupActivity)?.sendFCMNotification(fcmBody)
                 }
                 ChatClient.getInstance().pushManager().bindDeviceToken(fcmSenderId,it.result,object : CallBack{
                     override fun onSuccess() {
@@ -306,6 +306,7 @@ class UsersGroupActivity : AppCompatActivity() {
         EaseUIKit.getInstance().init(this,chatoptions)
     }
 
+/*
     private fun initAgoraCallKitSdk(){
         val easeCallKitConfig = EaseCallKitConfig()
         easeCallKitConfig.callTimeOut = 15
@@ -322,9 +323,11 @@ class UsersGroupActivity : AppCompatActivity() {
         EaseCallKit.getInstance().registerVideoCallClass(CallSingleBaseActivity::class.java)
         EaseCallKit.getInstance().registerMultipleVideoClass(CallMultipleBaseActivity::class.java)
     }
-    
+*/
+
     
 
+/*
     val easeCallKitListener = object : EaseCallKitListener {
         override fun onInviteUsers(
             callType: EaseCallType?,
@@ -394,6 +397,7 @@ class UsersGroupActivity : AppCompatActivity() {
             super.onUserInfoUpdate(userName)
         }
     }
+*/
 
     
     

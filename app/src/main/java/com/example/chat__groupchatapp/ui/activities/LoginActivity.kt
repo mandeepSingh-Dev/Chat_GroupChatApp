@@ -1,10 +1,13 @@
 package com.example.chat__groupchatapp.ui.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.example.chat__groupchatapp.R
+import com.example.chat__groupchatapp.Utils.Constants
 import com.example.chat__groupchatapp.Utils.Widgets.BounceButton
 import com.example.chat__groupchatapp.Utils.showToast
 import com.example.chat__groupchatapp.databinding.ActivityMainBinding
@@ -100,6 +103,14 @@ class LoginActivity : AppCompatActivity() {
                 val intent = Intent(this@LoginActivity, UsersGroupActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
+
+                val sharedPreferences = getSharedPreferences(Constants.sharedPrefName, MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putString(Constants.user,user)
+                editor.commit()
+                editor.apply()
+
+
                 showToast(message = "Login onSuccess")
             }
             override fun onError(code: Int, error: String?) {

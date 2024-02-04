@@ -81,14 +81,14 @@ dependencies {
     //Agora Chat SDK
     implementation("io.agora.rtc:chat-sdk:1.2.1")
     //Agora Video sdk
-   // implementation("io.agora.rtc:full-sdk:4.2.6")
+    implementation("io.agora.rtc:full-sdk:4.2.6")
 
    // implementation("io.agora.rtm:rtm-sdk:2.1.7")
     // implementation("io.agora.rtc:voice-sdk:4.2.6")
 
     implementation("io.agora.rtc:chat-uikit:1.2.0")
 
-    implementation("io.agora.rtc:chat-callkit:1.2.0")
+ //   implementation("io.agora.rtc:chat-callkit:1.2.0")
 
      //   implementation("com.github.AgoraIO-Community:VideoUIKit-Android:4.0.0")
 

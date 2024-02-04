@@ -4,6 +4,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.util.Log
 import androidx.core.app.NotificationCompat.MessagingStyle.Message
+import com.example.chat__groupchatapp.ui.activities.MConstants
 import io.agora.chat.ChatMessage
 import io.agora.chat.CmdMessageBody
 import io.agora.chat.CombineMessageBody
@@ -32,13 +33,14 @@ class CustomEaseChatFragment : EaseChatFragment() {
 
         try{
             //This is custom key added in data object.
-            pushObject.put("alert", message?.let { checkMessageType(chatMessage = it) })
+            pushObject.put(MConstants.ALERT, message?.let { checkMessageType(chatMessage = it) })
             //When app is in forground then set title to default title key of Agora (em_push_title)
-            pushObject.put("em_push_title",message?.from)
+            pushObject.put(MConstants.EM_PUSH_TITLE,message?.from)
             //When app is in forground then set content to default content key of Agora (em_push_content)
-            pushObject.put("em_push_content",message?.body)
+            pushObject.put(MConstants.EM_PUSH_CONTENT,message?.body)
             //This is custom key added in data object.
-            pushObject.put("chatType",message?.chatType.toString())
+            pushObject.put(MConstants.CHAT_TYPE,message?.chatType.toString())
+            pushObject.put(MConstants.CALL_OR_CHAT, MConstants.CHAT_VALUE)
 
           /*   pushObject.put("alert",message?.body?: " ALERT EMPTY")
             titleArgs.put("value1")
@@ -59,8 +61,6 @@ class CustomEaseChatFragment : EaseChatFragment() {
       return  if(chatMessage.type == ChatMessage.Type.TXT){
            val messageBody = chatMessage.body as TextMessageBody
            messageBody.message
-
-
         }
         else if(chatMessage.type == ChatMessage.Type.FILE){
            val messageBody =   chatMessage as TextMessageBody

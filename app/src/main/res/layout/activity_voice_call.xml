@@ -1,56 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#1E1E1E">
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+        <ImageView
+            android:id="@+id/callerProfileImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="64dp"
+            android:src="@drawable/baseline_account_circle_24"
+            app:tint="@color/white" />
+
+        <!-- Caller's Name -->
+        <TextView
+            android:id="@+id/usersNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/callerProfileImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Call Status -->
+        <TextView
+            android:id="@+id/callStatusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/usersNameTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="Calling..."
+            android:textColor="#66BB6A"
+            android:textSize="14sp" />
+    </LinearLayout>
     <!-- Caller's Profile Image -->
-    <ImageView
-        android:id="@+id/callerProfileImage"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
-        android:src="@drawable/baseline_account_circle_24"
-        android:tint="@color/white"
-        />
 
-    <!-- Caller's Name -->
-    <TextView
-        android:id="@+id/callerNameTextView"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/callerProfileImage"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="User 2"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
 
-    <!-- Call Status -->
-    <TextView
-        android:id="@+id/callStatusTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/callerNameTextView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="Calling..."
-        android:textColor="#66BB6A"
-        android:textSize="14sp" />
+        <!-- End Call Button -->
+        <ImageButton
+            android:id="@+id/speakerButton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="30dp"
 
-    <!-- End Call Button -->
-    <ImageButton
-        android:id="@+id/endCallButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="32dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/baseline_call_end_24"
-        />
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_volume_up_24"
+            android:tint="@color/white"
+            />
+        <!-- End Call Button -->
+        <ImageButton
+            android:id="@+id/endCallButton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_call_end_24"
+            />
+        <!-- End Call Button -->
+        <ImageButton
+            android:id="@+id/joinButton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
 
-</RelativeLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/baseline_call_24"
+            android:tint="#9E9D24"
+            />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

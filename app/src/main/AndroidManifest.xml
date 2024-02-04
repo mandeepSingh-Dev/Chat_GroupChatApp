@@ -60,7 +60,8 @@
             android:turnScreenOn="true" />
         <activity
             android:name=".ui.activities.AgoraChatUIActivity"
-            android:exported="false" /> <!-- <activity -->
+            android:exported="false"
+           /> <!-- <activity -->
         <!-- android:name=".ui.activities.GroupVideoCallActivity" -->
         <!-- android:exported="false" /> -->
         <!-- <activity -->
@@ -86,9 +87,18 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-        </activity> <!-- <activity -->
-        <!-- android:name=".ui.activities.VoiceCallActivity" -->
-        <!-- android:exported="true" /> -->
+        </activity>
+        <activity
+            android:name=".ui.activities.VoiceCallActivity"
+        android:exported="true"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ui.activities.VideoCallActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".ui.activities.GroupVideoCallActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ui.activities.CallSingleBaseActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

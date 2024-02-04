@@ -1,5 +1,6 @@
 package com.example.chat__groupchatapp
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,21 +12,16 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import com.example.chat__groupchatapp.AgoraTokenUtils.RtcTokenBuilder2
-import com.example.chat__groupchatapp.Utils.TokenBuilder
 import com.example.chat__groupchatapp.data.remote.model.AgoraNotificationItem
-import com.example.chat__groupchatapp.ui.activities.CallMultipleBaseActivity
-import com.example.chat__groupchatapp.ui.activities.CallSingleBaseActivity
-import com.example.chat__groupchatapp.ui.activities.GenerateNotificationBuilder
-import com.example.chat__groupchatapp.ui.activities.LoginActivity
-import com.example.chat__groupchatapp.ui.activities.UsersGroupActivity
+import com.example.chat__groupchatapp.ui.activities.*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import io.agora.chat.ChatClient
 import io.agora.chat.ChatMessage.ChatType
-import io.agora.chat.callkit.EaseCallKit
+/*import io.agora.chat.callkit.EaseCallKit
 import io.agora.chat.callkit.bean.EaseCallUserInfo
 import io.agora.chat.callkit.general.EaseCallEndReason
 import io.agora.chat.callkit.general.EaseCallError
@@ -33,8 +29,7 @@ import io.agora.chat.callkit.general.EaseCallKitConfig
 import io.agora.chat.callkit.general.EaseCallType
 import io.agora.chat.callkit.listener.EaseCallGetUserAccountCallback
 import io.agora.chat.callkit.listener.EaseCallKitListener
-import io.agora.chat.callkit.listener.EaseCallKitTokenCallback
-import org.json.JSONObject
+import io.agora.chat.callkit.listener.EaseCallKitTokenCallback*/
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -108,6 +103,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
            ChatClient.getInstance().sendFCMTokenToServer(token)
        }
     }
+/*
     val easeCallKitListener = object : EaseCallKitListener {
         override fun onInviteUsers(
             callType: EaseCallType?,
@@ -174,6 +170,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             super.onUserInfoUpdate(userName)
         }
     }
+*/
 
     // start notification id
 
@@ -274,6 +271,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 */
 
+/*
     private fun initAgoraCallKitSdk(){
         val easeCallKitConfig = EaseCallKitConfig()
         easeCallKitConfig.callTimeOut = 15
@@ -290,14 +288,39 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         EaseCallKit.getInstance().registerVideoCallClass(CallSingleBaseActivity::class.java)
         EaseCallKit.getInstance().registerMultipleVideoClass(CallMultipleBaseActivity::class.java)
     }
+*/
+
+/*
+    fun initiateCallService(){
+        try {
+            val callHandler = CallHandler(applicationContext)
+            callHandler.init()
+            callHandler.startIncomingCall("sessionId", "Video")
+        }catch (e:Exception){
+            Log.d("initiateCallErRor",e.message + " Error")
+            Toast.makeText(applicationContext,"unable to receive call due to ${e.message}",Toast.LENGTH_SHORT).show()
+        }
+    }
+*/
 }
 
 class MyBroadCastReceiver : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
-        Toast.makeText(context,"Received broadcast reciever",Toast.LENGTH_SHORT).show()
 
-        createNotification(context,intent)
+        val jsonBody = intent?.extras?.getString("e")
+        val item = Gson().fromJson<AgoraNotificationItem>(jsonBody,AgoraNotificationItem::class.java)
 
+        if(item.call_or_chat == MConstants.CHAT_VALUE){
+            createNotification(context, intent, isChat = true)
+        }else if(item.reject_call != null){
+            stopCallingScreenActivity(context,item)
+        }else{
+          //  if(isForeground(context,context?.packageName.toString())){
+            //    createNotification(context,intent ,isChat = false)
+           // }else{
+                startCallingScreenActivity(context,item)
+           // }
+        }
 
 
      /*    val intent1 = Intent(context,IncomingCallActivity::class.java)
@@ -310,7 +333,10 @@ class MyBroadCastReceiver : BroadcastReceiver(){
         context?.startActivity(intent1) */
     }
 
-    fun createNotification(context: Context?, intent: Intent?){
+
+
+    @SuppressLint("SuspiciousIndentation")
+    fun createNotification(context: Context?, intent: Intent?, isChat : Boolean = true ){
         val notificationManager = context?.getSystemService(FirebaseMessagingService.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(context?.getString(R.string.default_notification_channel_id),context?.getString(R.string.default_notification_channel_id),NotificationManager.IMPORTANCE_HIGH)
@@ -345,37 +371,24 @@ class MyBroadCastReceiver : BroadcastReceiver(){
             contentText = intent?.extras?.getString("alert").toString()
         }
 
-
-
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, context.getString(R.string.default_notification_channel_id))
             .setContentTitle(title)
             .setContentText(contentText)
             .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setSmallIcon(R.drawable.icons8_remind_app).setContentIntent(fullScreenPendingIntent)
-            .setAutoCancel(isAutocancel)
             .setFullScreenIntent(fullScreenPendingIntent, true)
 
-        if(isAutocancel){
-            builder.addAction(NotificationCompat.Action.Builder(io.agora.chat.callkit.R.drawable.call_answer,
-               "Accept",fullScreenPendingIntent).build())
-            builder.addAction(NotificationCompat.Action.Builder( io.agora.chat.callkit.R.drawable.call_end,"Reject",fullScreenPendingIntent).build())
+        if(isChat){
+            builder.setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            builder.setAutoCancel(true)
+        }else{
+            builder.setCategory(NotificationCompat.CATEGORY_CALL)
+            builder.setAutoCancel(false)
+          //  builder.addAction(NotificationCompat.Action.Builder(R.drawable.baseline_call_end_24,"Reject",))
         }
+
 
         notificationManager.notify(GenerateNotificationBuilder.NOTIFY_ID,builder.build())
-
-   /*      if(!isForeground(context,context.packageName)) {
-            val intent = Intent(context, IncomingCallActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-          //  context.startActivity(intent)
-        //    notificationManager.notify(1,builder.build())
-
-         //   Toast.makeText(context,"isForeground NOt",Toast.LENGTH_SHORT).show()
-        }else{
-       //     Toast.makeText(context,"isForeground",Toast.LENGTH_SHORT).show()
-          //  notificationManager.notify(1,builder.build())
-        }
- */
     }
 
     fun isForeground(context: Context?,myPackage: String): Boolean {
@@ -390,6 +403,110 @@ class MyBroadCastReceiver : BroadcastReceiver(){
         return isForeground
     }
 
+    private fun startCallingScreenActivity(context: Context?, item : AgoraNotificationItem){
 
+        var callingScreenActivity : Class<out AppCompatActivity>? = null
+
+        if(item.voice_or_video != null){
+             callingScreenActivity = if(item.voice_or_video == MConstants.VOICE_CALL_VALUE){
+                // if(item.call_Type == MConstants.SINGLE_CALL_TYPE_VALUE){}else{}
+                VoiceCallActivity::class.java
+            }else{
+                 if(item.call_Type == MConstants.SINGLE_CALL_TYPE_VALUE){
+                     VideoCallActivity::class.java
+                 }else{
+                     GroupVideoCallActivity::class.java
+                 }
+
+            }
+        }
+
+
+        val intent = Intent(context,callingScreenActivity)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        if(item.is_Incoming_Call != null){
+           intent.putExtra(MConstants.IS_INCOMING_CALL,item.is_Incoming_Call.toString())
+        }
+        if(item.channel_Name != null){
+        intent.putExtra(MConstants.CHANNEL_NAME,item.channel_Name.toString())
+            }
+        if(item.user_Id != null){
+           intent.putExtra(MConstants.TARGET_USER_ID,item.user_Id.toString())
+        }
+        if(item.call_Type != null){
+            intent.putExtra(MConstants.CALL_TYPE,item.call_Type.toString())
+            }
+        if(item.voice_or_video != null){
+           intent.putExtra(MConstants.VOICE_OR_VIDEO,item.voice_or_video.toString())
+                }
+        if(item.caller_Id != null){
+            intent.putExtra(MConstants.CALLER_ID,item.caller_Id.toString())
+        }
+        if(item.call_or_chat != null){
+           intent.putExtra(MConstants.CALL_OR_CHAT,item.call_or_chat.toString())
+        }
+        if(item.alert != null){
+            intent.putExtra(MConstants.ALERT,item.alert.toString())
+        }
+        if(item.chatType != null){
+            intent.putExtra(MConstants.CHAT_TYPE,item.chatType.toString())
+        }
+        context?.startActivity(intent)
+
+    }
+
+    private fun stopCallingScreenActivity(context: Context?, item: AgoraNotificationItem?) {
+
+
+
+        val voiceCallActivity = "com.example.chat__groupchatapp.ui.activities.VoiceCallActivity"
+        val videoCallActivity = "com.example.chat__groupchatapp.ui.activities.VideoCallActivity"
+        val groupVideoCallActivity = "com.example.chat__groupchatapp.ui.activities.GroupVideoCallActivity"
+
+        val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val runningActivities = activityManager.getRunningTasks(1)
+        if(runningActivities.isNotEmpty()){
+
+            runningActivities.forEach {
+                val topActivityClassName = it.topActivity?.className
+                if(topActivityClassName == voiceCallActivity || topActivityClassName == videoCallActivity || topActivityClassName == groupVideoCallActivity)
+                {
+                    if(topActivityClassName == voiceCallActivity){
+                       Log.d("Fvlfmvkf","voiceCallActivity")
+                        val intent = Intent(context,VoiceCallActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        intent.putExtra(MConstants.REJECT_CALL_ACTION,MConstants.REJECT_CALL_ACTION_VALUE)
+                        context?.startActivity(intent)
+                    }else if(topActivityClassName == videoCallActivity){
+                        Log.d("Fvlfmvkf","videoCallActivity")
+                        val intent = Intent(context,VideoCallActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        intent.putExtra(MConstants.REJECT_CALL_ACTION,MConstants.REJECT_CALL_ACTION_VALUE)
+                        context?.startActivity(intent)
+                    }else if(topActivityClassName == groupVideoCallActivity){
+                        Log.d("Fvlfmvkf","groupVideoCallActivity")
+                        val intent = Intent(context,GroupVideoCallActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        intent.putExtra(MConstants.REJECT_CALL_ACTION,MConstants.REJECT_CALL_ACTION_VALUE)
+                        context?.startActivity(intent)
+                    }
+                }
+            }
+        }
+    }
+}
+
+class CallActionsReciever : BroadcastReceiver(){
+    override fun onReceive(context: Context?, intent: Intent?) {
+         when(intent?.action){
+             MConstants.ACCEPT_CALL_ACTION -> {
+
+             }
+             MConstants.REJECT_CALL_ACTION -> {
+
+             }
+         }
+    }
 
 }

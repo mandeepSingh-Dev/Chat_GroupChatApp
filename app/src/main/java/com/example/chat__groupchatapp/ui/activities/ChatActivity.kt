@@ -162,6 +162,9 @@ class ChatActivity : AppCompatActivity() {
                // intent.putExtra("name",userEntity?.username)
               //  intent.putExtra("chat_type",chat_type.toString())
                // startActivity(intent)
+
+
+
             }else{
                 lifecycleScope.launch {
                     val crResult = agoraChatHelper.getGroupMembers(groupId.toString())

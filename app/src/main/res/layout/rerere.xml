@@ -51,56 +51,56 @@
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        >
+       <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_marginBottom="30dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    >
 
-        <!-- End Call Button -->
-        <ImageButton
-            android:id="@+id/speakerButton"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="30dp"
+    <!-- End Call Button -->
+    <ImageButton
+        android:id="@+id/speakerButton"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="30dp"
 
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/baseline_volume_up_24"
-            android:tint="@color/white"
-            />
-        <!-- End Call Button -->
-        <ImageButton
-            android:id="@+id/endCallButton"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/baseline_call_end_24"
-            />
-        <!-- End Call Button -->
-        <ImageButton
-            android:id="@+id/joinButton"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/baseline_volume_up_24"
+        android:tint="@color/white"
+        />
+    <!-- End Call Button -->
+    <ImageButton
+        android:id="@+id/endCallButton"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/baseline_call_end_24"
+        />
+    <!-- End Call Button -->
+    <ImageButton
+        android:id="@+id/joinButton"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
 
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/baseline_call_24"
-            app:tint="#9E9D24" />
-    </LinearLayout>
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:src="@drawable/baseline_call_24"
+        app:tint="#9E9D24" />
+</LinearLayout>
 
 
 

@@ -4,10 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
-    android:layout_margin="30dp"
+    android:background="#EAE2E2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.activities.VideoActivity">
+    tools:context=".ui.activities.VideoCallActivity">
 
     <TextView
         android:id="@+id/videoInfo"
@@ -29,15 +28,62 @@
           android:id="@+id/groupVideoRecyclerView"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+
           />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/joinLeaveBtn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Join"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+
+        <!-- End Call Button -->
+        <ImageButton
+            android:id="@+id/speakerButton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="30dp"
+
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_volume_up_24"
+            android:tint="@color/white"
+            />
+        <!-- End Call Button -->
+        <ImageButton
+            android:id="@+id/endCallButton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_call_end_24"
+            />
+        <!-- End Call Button -->
+        <ImageButton
+            android:id="@+id/joinButton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/baseline_call_24"
+            app:tint="#9E9D24" />
+    </LinearLayout>
+
 
 
 

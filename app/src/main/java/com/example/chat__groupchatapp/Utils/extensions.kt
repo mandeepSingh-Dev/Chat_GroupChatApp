@@ -49,3 +49,10 @@ fun getExpiryInSeconds(days : Int): Int {
 
     return oneDaySeconds*days
 }
+
+fun View.visible(){
+    this.visibility = View.VISIBLE
+}
+fun View.invisible(){
+    this.visibility = View.GONE
+}
