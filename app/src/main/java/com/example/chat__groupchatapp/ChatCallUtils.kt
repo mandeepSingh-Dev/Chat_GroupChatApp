@@ -5,8 +5,10 @@ import android.util.Log
 import android.widget.Toast
 import com.example.chat__groupchatapp.ui.activities.MConstants
 import io.agora.CallBack
+import io.agora.base.internal.ContextUtils
 import io.agora.chat.ChatClient
 import io.agora.chat.ChatMessage
+import io.agora.chat.ChatOptions
 import io.agora.chat.TextMessageBody
 import io.agora.chat.uikit.EaseUIKit
 import org.json.JSONArray
@@ -105,6 +107,16 @@ object ChatCallUtils {
         groupDescription: String?=null
     ){
 
+        //Need to initialize ChatClient when sendMessage from background killed state of app
+        //Bcoz in killed state ChatClient is not initialized we need to initialize this.
+        if( ! ChatClient.getInstance().isSdkInited) {
+            val chatoptions = ChatOptions()
+            chatoptions.appKey = context?.getString(R.string.APP_KEY)
+            chatoptions.requireDeliveryAck = true
+            chatoptions.autoLogin = true
+            ChatClient.getInstance().init(context, chatoptions)
+        }
+
         val chatMessage = ChatMessage.createSendMessage(ChatMessage.Type.TXT)
 
         val callActionMessage = if(voice_or_video == MConstants.VOICE_CALL_VALUE){
@@ -169,7 +181,7 @@ object ChatCallUtils {
             }
         })
 
-        ChatClient.getInstance().chatManager().sendMessage(chatMessage)
+       ChatClient.getInstance().chatManager().sendMessage(chatMessage)
     }
 
 

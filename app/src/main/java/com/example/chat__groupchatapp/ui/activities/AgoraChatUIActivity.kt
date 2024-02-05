@@ -720,6 +720,8 @@ object MConstants{
     const val ACCEPT_CALL_ACTION_VALUE = "accept"
     const val REJECT_CALL_ACTION_VALUE = "reject"
 
+    const val CALL_ACTION = "call_action"
+
     const val CALL_NOTIFICATION_ID = 100
 
 

@@ -1,18 +1,20 @@
 package com.example.chat__groupchatapp
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.RingtoneManager
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.app.Person
 import com.example.chat__groupchatapp.data.remote.model.AgoraNotificationItem
 import com.example.chat__groupchatapp.ui.activities.*
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -20,6 +22,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import io.agora.chat.ChatClient
 import io.agora.chat.ChatMessage.ChatType
+
 /*import io.agora.chat.callkit.EaseCallKit
 import io.agora.chat.callkit.bean.EaseCallUserInfo
 import io.agora.chat.callkit.general.EaseCallEndReason
@@ -101,6 +104,13 @@ class MyBroadCastReceiver : BroadcastReceiver(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(context?.getString(R.string.default_notification_channel_id),context?.getString(R.string.default_notification_channel_id),NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(notificationChannel)
+
+            val audioAttributes = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setLegacyStreamType(AudioManager.STREAM_RING)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
+
+            notificationChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE),audioAttributes)
         }
         val jsonBody = intent?.extras?.getString("e")
         val item = Gson().fromJson<AgoraNotificationItem>(jsonBody,AgoraNotificationItem::class.java)
@@ -109,24 +119,29 @@ class MyBroadCastReceiver : BroadcastReceiver(){
 
         var title : String = ""
         var contentText : String = ""
+        var caller : String = ""
 
         if(item.voice_or_video != null){
             callingScreenActivity = if(item.voice_or_video == MConstants.VOICE_CALL_VALUE){
                 if(item.call_Type == MConstants.SINGLE_CALL_TYPE_VALUE){
+                    caller = item.caller_Id.toString()
                     title = "Agora voice call"
                     contentText = "Agora Voice call from ${item.caller_Id}"
                 }else{
+                    caller = item.group_Name.toString()
                     title = "Agora voice group call"
                     contentText = "Agora voice group call from ${item.group_Id ?: item.group_Name}"
                 }
                 VoiceCallActivity::class.java
             }else{
                 if(item.call_Type == MConstants.SINGLE_CALL_TYPE_VALUE){
+                    caller = item.caller_Id.toString()
                     title = "Agora video call"
                     contentText = "Agora Video call from ${item.caller_Id}"
 
                     VideoCallActivity::class.java
                 }else{
+                    caller = item.group_Name.toString()
                     title = "Agora video call"
                     contentText = "Agora video group call from ${item.group_Id ?: item.group_Name}"
                     GroupVideoCallActivity::class.java
@@ -135,8 +150,45 @@ class MyBroadCastReceiver : BroadcastReceiver(){
             }
         }
 
+        val acceptFullScreenIntent = callingScreenActivity?.let { getCallingScreenIntent(context,item, it,MConstants.ACCEPT_CALL_ACTION_VALUE) }
+        val rejectFullScreenIntent = callingScreenActivity?.let { getCallingScreenIntent(context,item, it,MConstants.REJECT_CALL_ACTION_VALUE) }
+        val fullScreenIntent = callingScreenActivity?.let { getCallingScreenIntent(context,item, it) }
+
+
+
+        val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        val acceptCallingScreenPendingIntent = PendingIntent.getActivity(context, 1, acceptFullScreenIntent, flags)
+        val rejectCallingScreenPendingIntent = PendingIntent.getActivity(context, 2, rejectFullScreenIntent, flags)
+        val fullScreenPendingIntent = PendingIntent.getActivity(context, 3, fullScreenIntent, flags)
+
+
+        val incomingCaller = Person.Builder()
+            .setName(caller)
+            .setImportant(true)
+            .build()
+
+
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, context.getString(R.string.default_notification_channel_id))
+            .setContentTitle(title)
+            .setContentText(contentText)
+            .setSmallIcon(R.drawable.icons8_remind_app)
+            .setContentIntent(fullScreenPendingIntent)
+          //  .addAction(NotificationCompat.Action.Builder(R.drawable.baseline_call_end_24,"Reject",rejectCallingScreenPendingIntent).build())
+          //  .addAction(NotificationCompat.Action.Builder(androidx.core.R.drawable.ic_call_answer,"Accept",acceptCallingScreenPendingIntent).build())
+            .setFullScreenIntent(fullScreenPendingIntent, true)
+           // .setCategory(NotificationCompat.CATEGORY_CALL)
+            //.setVibrate(longArrayOf(1000,1000,1000,1000,1000))
+            .setStyle(NotificationCompat.CallStyle.forIncomingCall(incomingCaller, rejectCallingScreenPendingIntent, acceptCallingScreenPendingIntent))
+            .addPerson(incomingCaller)
+            //  builder.addAction(NotificationCompat.Action.Builder(R.drawable.baseline_call_end_24,"Reject",))
+
+        notificationManager.notify(MConstants.CALL_NOTIFICATION_ID,builder.build())
+
+    }
+
+    fun getCallingScreenIntent(context: Context?,item : AgoraNotificationItem, callingScreenActivity : Class<out AppCompatActivity>, accept_reject : String? = null): Intent {
         val fullScreenIntent = Intent(context, callingScreenActivity)
-            fullScreenIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        fullScreenIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
         if(item.is_Incoming_Call != null){
             fullScreenIntent.putExtra(MConstants.IS_INCOMING_CALL,item.is_Incoming_Call.toString())
@@ -178,23 +230,17 @@ class MyBroadCastReceiver : BroadcastReceiver(){
             fullScreenIntent.putExtra(MConstants.GROUP_OWNER,item.group_Owner)
         }
 
+        val call_action = if(accept_reject == MConstants.ACCEPT_CALL_ACTION_VALUE)
+         MConstants.ACCEPT_CALL_ACTION_VALUE
+        else if(accept_reject == MConstants.REJECT_CALL_ACTION_VALUE)
+           MConstants.REJECT_CALL_ACTION_VALUE
+        else
+            null
 
-        val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        val fullScreenPendingIntent = PendingIntent.getActivity(context, 1, fullScreenIntent, flags)
+        Log.d("fvfkvkfvf",call_action.toString())
+        fullScreenIntent.putExtra(MConstants.CALL_ACTION,call_action)
 
-
-
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, context.getString(R.string.default_notification_channel_id))
-            .setContentTitle(title)
-            .setContentText(contentText)
-            .setSmallIcon(R.drawable.icons8_remind_app).setContentIntent(fullScreenPendingIntent)
-            .addAction(NotificationCompat.Action.Builder(R.drawable.baseline_call_end_24,"Reject",fullScreenPendingIntent).build())
-            .addAction(NotificationCompat.Action.Builder(androidx.core.R.drawable.ic_call_answer,"Accept",fullScreenPendingIntent).build())
-            .setFullScreenIntent(fullScreenPendingIntent, true)
-            .setCategory(NotificationCompat.CATEGORY_CALL)
-            //  builder.addAction(NotificationCompat.Action.Builder(R.drawable.baseline_call_end_24,"Reject",))
-
-        notificationManager.notify(MConstants.CALL_NOTIFICATION_ID,builder.build())
+        return fullScreenIntent
 
     }
 

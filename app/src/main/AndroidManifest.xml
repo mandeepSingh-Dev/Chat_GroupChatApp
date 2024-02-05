@@ -31,6 +31,7 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     
+    
 
     <uses-permission
         android:name="android.permission.START_FOREGROUND_SERVICES_FROM_BACKGROUND"
@@ -99,12 +100,14 @@
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
+            android:launchMode="singleTop"
             />
         <activity android:name=".ui.activities.VideoCallActivity"
             android:exported="true"
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
+            android:launchMode="singleTop"
             />
 
         <activity android:name=".ui.activities.GroupVideoCallActivity"
@@ -112,6 +115,7 @@
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
+            android:launchMode="singleTop"
             />
         <activity
             android:name=".ui.activities.CallSingleBaseActivity"

@@ -61,6 +61,7 @@ class VoiceCallActivity : AppCompatActivity() {
     var membersList : ArrayList<String>? = arrayListOf()
 
 
+
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,53 +129,26 @@ class VoiceCallActivity : AppCompatActivity() {
             binding.joinButton.visible()
         }
 
-      //  fetchGroupMembers()
+        fetchGroupMembers()
 
+        if(intent.getStringExtra(MConstants.CALL_ACTION) != null){
+            val call_action = intent.getStringExtra(MConstants.CALL_ACTION)
+            if(call_action == MConstants.ACCEPT_CALL_ACTION_VALUE){
+                ringtone?.stop()
+                joinChannel()
+            }else{
+                sendRejectMessage()
+                leaveChannel()
+            }
+
+        }
     }
 
     fun setClickListeners(){
 
         binding.endCallButton.setOnClickListener {
             // ringtone?.stop()
-         //   try {
-                Log.d("fbbkmbkgb",userId.toString() + "  userId")
-                Log.d("fbbkmbkgb",caller_Id.toString() + "  callerId")
-                if (callType == MConstants.SINGLE_CALL_TYPE_VALUE) {
-                    ChatCallUtils.sendRejectCallMessage(
-                        this,
-                        callType = callType.toString(),
-                        voice_or_video = MConstants.VOICE_CALL_VALUE,
-                        toUserId = if(isComingCall == "false") userId.toString() else caller_Id.toString(),
-                        channelName,
-                        groupId,
-                        groupName,
-                        groupOwner,
-                        groupDescription
-                    )
-                }
-                //If Call from Group Chat
-                else {
-                    Log.d("Fbkmkbfmn",membersList?.size.toString())
-                    //Sending Invitations to all members one by one.
-                    membersList?.forEach { userId ->
-                        Log.d("flmfvmf",userId.toString())
-                        ChatCallUtils.sendRejectCallMessage(
-                            this,
-                            callType = callType.toString(),
-                            voice_or_video = MConstants.VOICE_CALL_VALUE,
-                            toUserId = userId.toString(),
-                            channelName,
-                            groupId,
-                            groupName,
-                            groupOwner,
-                            groupDescription
-                        )
-                    }
-                }
-         /*    }catch (e:Exception){
-                Log.d("fkvkjvnjkfv",e.message.toString())
-            }
- */
+            sendRejectMessage()
             leaveChannel()
 
         }
@@ -185,6 +159,8 @@ class VoiceCallActivity : AppCompatActivity() {
         binding.speakerButton.setOnClickListener {
             rtcEngine?.isSpeakerphoneEnabled?.let { it1 -> rtcEngine?.setEnableSpeakerphone(!it1) }
         }
+
+
     }
 
     private fun setUpRtcEngine(){
@@ -342,10 +318,52 @@ class VoiceCallActivity : AppCompatActivity() {
         }
     }
 
+    fun sendRejectMessage(){
+        try {
+            Log.d("fbbkmbkgb",userId.toString() + "  userId")
+            Log.d("fbbkmbkgb",caller_Id.toString() + "  callerId")
+            if (callType == MConstants.SINGLE_CALL_TYPE_VALUE) {
+                ChatCallUtils.sendRejectCallMessage(
+                    this,
+                    callType = callType.toString(),
+                    voice_or_video = MConstants.VOICE_CALL_VALUE,
+                    toUserId = if(isComingCall == "false") userId.toString() else caller_Id.toString(),
+                    channelName,
+                    groupId,
+                    groupName,
+                    groupOwner,
+                    groupDescription
+                )
+            }
+            //If Call from Group Chat
+            else {
+                Log.d("Fbkmkbfmn",membersList?.size.toString())
+                //Sending Invitations to all members one by one.
+                membersList?.forEach { userId ->
+                    Log.d("flmfvmf",userId.toString())
+                    ChatCallUtils.sendRejectCallMessage(
+                        this,
+                        callType = callType.toString(),
+                        voice_or_video = MConstants.VOICE_CALL_VALUE,
+                        toUserId = userId.toString(),
+                        channelName,
+                        groupId,
+                        groupName,
+                        groupOwner,
+                        groupDescription
+                    )
+                }
+            }
+        }catch (e:Exception){
+            Log.d("fkvkjvnjkfv",e.message.toString())
+        }
+    }
+
 
     //When user reject the call then from FCM service this activity class start by startActivity with SINGLE_TOP that will deliver newIntent not created newInstance of activity.
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        Log.d("jfhvjhbvjf","onNewIntent")
         val reject = intent?.getStringExtra(MConstants.REJECT_CALL_ACTION).toString()
         if(reject == MConstants.REJECT_CALL_ACTION_VALUE)
         {
