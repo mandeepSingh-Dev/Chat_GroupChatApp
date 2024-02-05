@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 
 }
 
@@ -87,6 +88,10 @@ dependencies {
     // implementation("io.agora.rtc:voice-sdk:4.2.6")
 
     implementation("io.agora.rtc:chat-uikit:1.2.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
 
  //   implementation("io.agora.rtc:chat-callkit:1.2.0")
 

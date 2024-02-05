@@ -11,7 +11,6 @@ import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import com.example.chat__groupchatapp.data.remote.model.AgoraNotificationItem
@@ -35,67 +34,17 @@ import io.agora.chat.callkit.listener.EaseCallKitTokenCallback*/
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
 
+
     override fun onMessageReceived(message: RemoteMessage) {
 
-        Log.d("fmfkvnfmv","inMess")
-
-//        initAgoraCallKitSdk()
-//
-//        val activityIntent = Intent(this,MyBroadCastReceiver::class.java)
-//        message.data .forEach {
-//            activityIntent.putExtra(it.key,it.value)
-//        }
-//
-//
-//
-//        Log.d("fkvnjfnvf",message.data.get("f").toString())
-//        CoroutineScope(Dispatchers.Main).launch {
-//            EaseCallKit.getInstance().startSingleCall(
-//                EaseCallType.SINGLE_VOICE_CALL,
-//                message.data.get("2"),
-//                null,
-//                CallSingleBaseActivity::class.java
-//            )
-//        }
-        val activityIntent = Intent(this,MyBroadCastReceiver::class.java)
+  /*       val activityIntent = Intent(this,MyBroadCastReceiver::class.java)
         message.data.forEach {
             activityIntent.putExtra(it.key,it.value)
         }
         sendBroadcast(activityIntent)
-
-
-    }
-
-
-    fun createNotification(){
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(getString(R.string.default_notification_channel_id),getString(R.string.default_notification_channel_id),NotificationManager.IMPORTANCE_HIGH)
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
-
-
-        val fullScreenIntent: Intent = Intent(this, LoginActivity::class.java)
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-
-        val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        val fullScreenPendingIntent = PendingIntent.getActivity(this, 3054, fullScreenIntent, flags)
-
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
-            .setContentTitle(getString(R.string.app_name))
-            .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentIntent(fullScreenPendingIntent)
-            .setOnlyAlertOnce(true)
-            .setFullScreenIntent(fullScreenPendingIntent, true)
-
-        notificationManager.notify(1,builder.build())
+ */
 
     }
-
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -103,76 +52,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
            ChatClient.getInstance().sendFCMTokenToServer(token)
        }
     }
-/*
-    val easeCallKitListener = object : EaseCallKitListener {
-        override fun onInviteUsers(
-            callType: EaseCallType?,
-            existMembers: Array<out String>?,
-            ext: JSONObject?,
-        ) {
-        }
-
-        override fun onEndCallWithReason(
-            callType: EaseCallType?,
-            channelName: String?,
-            reason: EaseCallEndReason?,
-            callTime: Long,
-        ) {
-            Log.d("fvmkf3232mv","onEndCallWithReason")
-        }
-
-        override fun onReceivedCall(
-            callType: EaseCallType?,
-            fromUserId: String?,
-            ext: JSONObject?,
-        ) {
-            Log.d("fvmkf3232mv","onReceivedCall")
-        }
-
-        override fun onGenerateRTCToken(
-            userId: String?,
-            channelName: String?,
-            callback: EaseCallKitTokenCallback?,
-        ) {
-            super.onGenerateRTCToken(userId, channelName, callback)
-
-
-            val token = TokenBuilder.getRtcTokenOfUid(this@MyFirebaseMessagingService,userId?.toInt() ?: 0,channelName.toString(),
-                RtcTokenBuilder2.Role.ROLE_PUBLISHER)
-
-            callback?.onSetToken(token, userId?.toInt()?: 0)
-        }
-
-        override fun onCallError(type: EaseCallError?, errorCode: Int, description: String?) {
-
-            Log.d("fbfmbkfbmfg",type?.name.toString())
-            Log.d("fbfmbkfbmfg",type.toString())
-            Log.d("fbfmbkfbmfg",description.toString())
-            Log.d("fbfmbkfbmfg",errorCode.toString())
-            Log.d("fvmkf3232mv","onCallError")
-        }
-
-        override fun onInViteCallMessageSent() {
-            Log.d("fvmkf3232mv","onInViteCallMessageSent")
-            // sendChatMessage()
-        }
-
-        override fun onRemoteUserJoinChannel(
-            channelName: String?,
-            userName: String?,
-            uid: Int,
-            callback: EaseCallGetUserAccountCallback?,
-        ) {
-            Log.d("fvmkf3232mv","onRemoteUserJoinChannel")
-        }
-
-        override fun onUserInfoUpdate(userName: String?) {
-            super.onUserInfoUpdate(userName)
-        }
-    }
-*/
-
-    // start notification id
 
     override fun handleIntent(intent: Intent?) {
 
@@ -183,130 +62,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
         sendBroadcast(activityIntent)
     }
-
-
-/*
-    override fun handleIntent(intent: Intent?) {
-
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-        val intent1 = Intent(this,IncomingCallActivity::class.java)
-        intent1.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        val builder: NotificationCompat.Builder = GenerateNotificationBuilder.generateNotificatiobnBuilder(this,intent?.extras?.get("alert").toString())
-        val notification = builder.build()
-
-        notificationManager.notify(GenerateNotificationBuilder.NOTIFY_ID, notification)
-
-*/
-/*
-     //   EaseCallKit.getInstance().setCallKitListener(easeCallKitListener)
-     //   EaseCallKit.getInstance().notifier.notify(intent,"Hello","")
-        try {
-
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-        val intent = Intent(this,IncomingCallActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-       // if (!EasyUtils.isAppRunningForeground(this.applicationContext)) {
-                val builder: NotificationCompat.Builder = GenerateNotificationBuilder.generateBaseFullIntentBuilder(intent,this,"Hello")
-                val notification = builder.build()
-
-                notificationManager.notify(GenerateNotificationBuilder.NOTIFY_ID, notification)
-                //                if (Build.VERSION.SDK_INT < 26) {
-//                    vibrateAndPlayTone(null);
-//                }
-
-            } catch (e: Exception) {
-                Log.d("fkbnkfkbnf",e.message.toString())
-                e.printStackTrace()
-            }
-     //   }
-*//*
-
-
-        val intent = Intent(this, IncomingCallActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-      //  startActivity(intent)
-
-
-        */
-/*
-                intent?.extras?.keySet()?.forEach {
-                    Log.d("fvlvkfvf",it.toString() + " -> " +intent?.extras?.get(it).toString())
-                }
-
-                val activityIntent1 = Intent(this,MyBroadCastReceiver::class.java)
-
-                intent?.extras?.keySet()?.forEach {
-                    activityIntent1.putExtra(it,intent.extras?.get(it).toString())
-                }
-                sendBroadcast(activityIntent1) *//*
-
-
-    }
-*/
-
-/*
-    override fun handleIntent(intent: Intent?) {
-     //  super.handleIntent(intent)
-*/
-/*
-        createNotification()
-         *//*
-
-        val alert = intent?.getStringExtra("alert")
-        if(alert?.contains("video") == true){
-            val intent1 = Intent(this, IncomingCallActivity::class.java)
-            intent1.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            intent1.putExtra("f",intent.getStringExtra("f"))
-            startActivity(intent1)
-        }else{
-            createNotification()
-        }
-
-        intent?.extras?.keySet()?.forEach {
-            Log.d("Ffkbnfkbnf",it + " -> "+  intent.extras?.get(it).toString() + " handleIntent")
-        }
-    }
-*/
-
-/*
-    private fun initAgoraCallKitSdk(){
-        val easeCallKitConfig = EaseCallKitConfig()
-        easeCallKitConfig.callTimeOut = 15
-        easeCallKitConfig.agoraAppId = getString(R.string.APP_ID)
-        easeCallKitConfig.isEnableRTCToken = true
-
-        val userInfoMap: MutableMap<String, EaseCallUserInfo> = HashMap()
-        userInfoMap["***"] = EaseCallUserInfo("***", null)
-        userInfoMap["***"] = EaseCallUserInfo("****", null)
-        easeCallKitConfig.setUserInfoMap(userInfoMap)
-
-        EaseCallKit.getInstance().init(applicationContext,easeCallKitConfig)
-
-        EaseCallKit.getInstance().registerVideoCallClass(CallSingleBaseActivity::class.java)
-        EaseCallKit.getInstance().registerMultipleVideoClass(CallMultipleBaseActivity::class.java)
-    }
-*/
-
-/*
-    fun initiateCallService(){
-        try {
-            val callHandler = CallHandler(applicationContext)
-            callHandler.init()
-            callHandler.startIncomingCall("sessionId", "Video")
-        }catch (e:Exception){
-            Log.d("initiateCallErRor",e.message + " Error")
-            Toast.makeText(applicationContext,"unable to receive call due to ${e.message}",Toast.LENGTH_SHORT).show()
-        }
-    }
-*/
 }
 
 class MyBroadCastReceiver : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
 
+        //"e" contains jsonBody of push notification.
         val jsonBody = intent?.extras?.getString("e")
         val item = Gson().fromJson<AgoraNotificationItem>(jsonBody,AgoraNotificationItem::class.java)
 
@@ -318,7 +79,8 @@ class MyBroadCastReceiver : BroadcastReceiver(){
           //  if(isForeground(context,context?.packageName.toString())){
             //    createNotification(context,intent ,isChat = false)
            // }else{
-                startCallingScreenActivity(context,item)
+            createCallFullScreenNotification(context,intent)
+               // startCallingScreenActivity(context,item)
            // }
         }
 
@@ -334,9 +96,111 @@ class MyBroadCastReceiver : BroadcastReceiver(){
     }
 
 
+    fun createCallFullScreenNotification(context: Context?, intent : Intent?){
+        val notificationManager = context?.getSystemService(FirebaseMessagingService.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(context?.getString(R.string.default_notification_channel_id),context?.getString(R.string.default_notification_channel_id),NotificationManager.IMPORTANCE_HIGH)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+        val jsonBody = intent?.extras?.getString("e")
+        val item = Gson().fromJson<AgoraNotificationItem>(jsonBody,AgoraNotificationItem::class.java)
+
+        var callingScreenActivity : Class<out AppCompatActivity>? = null
+
+        var title : String = ""
+        var contentText : String = ""
+
+        if(item.voice_or_video != null){
+            callingScreenActivity = if(item.voice_or_video == MConstants.VOICE_CALL_VALUE){
+                if(item.call_Type == MConstants.SINGLE_CALL_TYPE_VALUE){
+                    title = "Agora voice call"
+                    contentText = "Agora Voice call from ${item.caller_Id}"
+                }else{
+                    title = "Agora voice group call"
+                    contentText = "Agora voice group call from ${item.group_Id ?: item.group_Name}"
+                }
+                VoiceCallActivity::class.java
+            }else{
+                if(item.call_Type == MConstants.SINGLE_CALL_TYPE_VALUE){
+                    title = "Agora video call"
+                    contentText = "Agora Video call from ${item.caller_Id}"
+
+                    VideoCallActivity::class.java
+                }else{
+                    title = "Agora video call"
+                    contentText = "Agora video group call from ${item.group_Id ?: item.group_Name}"
+                    GroupVideoCallActivity::class.java
+                }
+
+            }
+        }
+
+        val fullScreenIntent = Intent(context, callingScreenActivity)
+            fullScreenIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        if(item.is_Incoming_Call != null){
+            fullScreenIntent.putExtra(MConstants.IS_INCOMING_CALL,item.is_Incoming_Call.toString())
+        }
+        if(item.channel_Name != null){
+            fullScreenIntent.putExtra(MConstants.CHANNEL_NAME,item.channel_Name.toString())
+        }
+        if(item.user_Id != null){
+            fullScreenIntent.putExtra(MConstants.TARGET_USER_ID,item.user_Id.toString())
+        }
+        if(item.call_Type != null){
+            fullScreenIntent.putExtra(MConstants.CALL_TYPE,item.call_Type.toString())
+        }
+        if(item.voice_or_video != null){
+            fullScreenIntent.putExtra(MConstants.VOICE_OR_VIDEO,item.voice_or_video.toString())
+        }
+        if(item.caller_Id != null){
+            fullScreenIntent.putExtra(MConstants.CALLER_ID,item.caller_Id.toString())
+        }
+        if(item.call_or_chat != null){
+            fullScreenIntent.putExtra(MConstants.CALL_OR_CHAT,item.call_or_chat.toString())
+        }
+        if(item.alert != null){
+            fullScreenIntent.putExtra(MConstants.ALERT,item.alert.toString())
+        }
+        if(item.chatType != null){
+            fullScreenIntent.putExtra(MConstants.CHAT_TYPE,item.chatType.toString())
+        }
+        if(item.group_Id != null){
+            fullScreenIntent.putExtra(MConstants.GROUP_ID,item.group_Id)
+        }
+        if(item.group_Name != null){
+            fullScreenIntent.putExtra(MConstants.GROUP_NAME,item.group_Name)
+        }
+        if(item.group_Description != null){
+            fullScreenIntent.putExtra(MConstants.GROUP_DESCRIPTION,item.group_Description)
+        }
+        if(item.group_Owner != null){
+            fullScreenIntent.putExtra(MConstants.GROUP_OWNER,item.group_Owner)
+        }
+
+
+        val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        val fullScreenPendingIntent = PendingIntent.getActivity(context, 1, fullScreenIntent, flags)
+
+
+
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, context.getString(R.string.default_notification_channel_id))
+            .setContentTitle(title)
+            .setContentText(contentText)
+            .setSmallIcon(R.drawable.icons8_remind_app).setContentIntent(fullScreenPendingIntent)
+            .addAction(NotificationCompat.Action.Builder(R.drawable.baseline_call_end_24,"Reject",fullScreenPendingIntent).build())
+            .addAction(NotificationCompat.Action.Builder(androidx.core.R.drawable.ic_call_answer,"Accept",fullScreenPendingIntent).build())
+            .setFullScreenIntent(fullScreenPendingIntent, true)
+            .setCategory(NotificationCompat.CATEGORY_CALL)
+            //  builder.addAction(NotificationCompat.Action.Builder(R.drawable.baseline_call_end_24,"Reject",))
+
+        notificationManager.notify(MConstants.CALL_NOTIFICATION_ID,builder.build())
+
+    }
+
 
     @SuppressLint("SuspiciousIndentation")
-    fun createNotification(context: Context?, intent: Intent?, isChat : Boolean = true ){
+    fun createNotification(context: Context?, intent: Intent?, isChat : Boolean = true ) {
         val notificationManager = context?.getSystemService(FirebaseMessagingService.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(context?.getString(R.string.default_notification_channel_id),context?.getString(R.string.default_notification_channel_id),NotificationManager.IMPORTANCE_HIGH)
@@ -374,12 +238,10 @@ class MyBroadCastReceiver : BroadcastReceiver(){
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, context.getString(R.string.default_notification_channel_id))
             .setContentTitle(title)
             .setContentText(contentText)
-            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setSmallIcon(R.drawable.icons8_remind_app).setContentIntent(fullScreenPendingIntent)
-            .setFullScreenIntent(fullScreenPendingIntent, true)
+            //   .setFullScreenIntent(fullScreenPendingIntent, true)
 
         if(isChat){
-            builder.setCategory(NotificationCompat.CATEGORY_MESSAGE)
             builder.setAutoCancel(true)
         }else{
             builder.setCategory(NotificationCompat.CATEGORY_CALL)
@@ -388,7 +250,7 @@ class MyBroadCastReceiver : BroadcastReceiver(){
         }
 
 
-        notificationManager.notify(GenerateNotificationBuilder.NOTIFY_ID,builder.build())
+        notificationManager.notify(101,builder.build())
     }
 
     fun isForeground(context: Context?,myPackage: String): Boolean {
@@ -452,6 +314,19 @@ class MyBroadCastReceiver : BroadcastReceiver(){
         if(item.chatType != null){
             intent.putExtra(MConstants.CHAT_TYPE,item.chatType.toString())
         }
+       if(item.group_Id != null){
+            intent.putExtra(MConstants.GROUP_ID,item.group_Id)
+        }
+       if(item.group_Name != null){
+            intent.putExtra(MConstants.GROUP_NAME,item.group_Name)
+        }
+       if(item.group_Description != null){
+            intent.putExtra(MConstants.GROUP_DESCRIPTION,item.group_Description)
+        }
+       if(item.group_Owner != null){
+            intent.putExtra(MConstants.GROUP_OWNER,item.group_Owner)
+        }
+
         context?.startActivity(intent)
 
     }

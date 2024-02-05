@@ -5,43 +5,33 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.SurfaceView
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.agorademoapps.Util.RtcEventHandler
 import com.example.chat__groupchatapp.AgoraTokenUtils.RtcTokenBuilder2
+import com.example.chat__groupchatapp.ChatCallUtils
 import com.example.chat__groupchatapp.Utils.TokenBuilder
 import com.example.chat__groupchatapp.Utils.invisible
 import com.example.chat__groupchatapp.Utils.showToast
 import com.example.chat__groupchatapp.Utils.visible
 import com.example.chat__groupchatapp.databinding.ActivityGroupVideoCallBinding
-import com.example.chat__groupchatapp.databinding.ActivityVideoBinding
 import com.example.chat__groupchatapp.ui.adapter.GroupVideoSurfaceViewAdapter
+import io.agora.ValueCallBack
 import io.agora.chat.ChatClient
+import io.agora.chat.CursorResult
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.video.VideoCanvas
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlin.random.Random
-import kotlin.random.nextInt
-
-
 
 
 class GroupVideoCallActivity : AppCompatActivity() {
@@ -88,9 +78,15 @@ class GroupVideoCallActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Toast.makeText(applicationContext,"Call initiated", Toast.LENGTH_SHORT).show()
         binding = ActivityGroupVideoCallBinding.inflate(layoutInflater)
         setContentView(binding.root)
         appId = getString(R.string.APP_ID)
+
+        try {
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(MConstants.CALL_NOTIFICATION_ID)
+        }catch (e:Exception){}
 
         try {
             uId = ChatClient.getInstance().currentUser.toInt() ?: 0
@@ -114,7 +110,6 @@ class GroupVideoCallActivity : AppCompatActivity() {
         groupName = intent.getStringExtra(MConstants.GROUP_NAME)
         groupOwner = intent.getStringExtra(MConstants.GROUP_OWNER)
         groupDescription = intent.getStringExtra(MConstants.GROUP_DESCRIPTION)
-        membersList = intent.getStringArrayListExtra(MConstants.GROUP_MEMBERS_LIST)
 
         token = TokenBuilder.getRtcTokenOfUid(this,uId,channelName.toString(),RtcTokenBuilder2.Role.ROLE_PUBLISHER)
 
@@ -123,7 +118,7 @@ class GroupVideoCallActivity : AppCompatActivity() {
         if (!checkSelfPermission()) {
             permissionsLauncher.launch(REQUESTED_PERMISSIONS)
         }else{
-            setUpAgoraEngine()
+            setUpRtcEngine()
         }
 
         if(isComingCall == "true"){
@@ -141,7 +136,7 @@ class GroupVideoCallActivity : AppCompatActivity() {
             binding.joinButton.visible()
         }
 
-
+        fetchGroupMembers()
 
         setUpRecyclerView()
 
@@ -154,6 +149,48 @@ class GroupVideoCallActivity : AppCompatActivity() {
             ringtone?.stop()
         }
         binding.endCallButton.setOnClickListener {
+
+            try {
+                Log.d("fbbkmbkgb",userId.toString() + "  userId")
+                Log.d("fbbkmbkgb",caller_Id.toString() + "  callerId")
+                if (callType == MConstants.SINGLE_CALL_TYPE_VALUE) {
+
+                    ChatCallUtils.sendRejectCallMessage(
+                        this,
+                        callType = callType.toString(),
+                        voice_or_video = MConstants.VIDEO_CALL_VALUE,
+                        toUserId = userId.toString(),
+                        channelName = channelName,
+                        groupId,
+                        groupName,
+                        groupOwner,
+                        groupDescription
+                    )
+
+                }
+                //If Call from Group Chat
+                else {
+                    Log.d("Fbkmkbfmn",membersList?.size.toString())
+                    //Sending Invitations to all members one by one.
+                    membersList?.forEach { userId ->
+                        Log.d("flmfvmf",userId.toString())
+
+                        ChatCallUtils.sendRejectCallMessage(
+                            this,
+                            callType = callType.toString(),
+                            voice_or_video = MConstants.VIDEO_CALL_VALUE,
+                            toUserId = userId.toString(),
+                            channelName = channelName,
+                            groupId,
+                            groupName,
+                            groupOwner,
+                            groupDescription
+                        )
+                    }
+                }
+            }catch (e:Exception){}
+
+
             leaveChannel()
         }
         binding.speakerButton.setOnClickListener {
@@ -179,17 +216,18 @@ class GroupVideoCallActivity : AppCompatActivity() {
         }else if(!cameraPermission){
             showToast("Please allow camera permission.")
         }else{
-            setUpAgoraEngine()
+            setUpRtcEngine()
         }
     }
 
-    private fun setUpAgoraEngine(){
+    private fun setUpRtcEngine(){
         try {
 
             rtcEngine = RtcEngine.create(this,appId,rtcEventHandler)
 
             rtcEngine?.setChannelProfile(Constants.CHANNEL_PROFILE_COMMUNICATION)
             rtcEngine?.enableVideo()
+            enableLocalVideo()
 
             if(isComingCall == "false") {
                 joinChannel()
@@ -206,41 +244,62 @@ class GroupVideoCallActivity : AppCompatActivity() {
         setUpRemoteVideo(it)
 
     },
-    mOnJoinChannelSuccesss = {e,r,t ->},
+    mOnJoinChannelSuccesss = {e,r,t ->
+        //If Call from Single Chat
+        if(callType == MConstants.SINGLE_CALL_TYPE_VALUE){
+            ChatCallUtils.sendCallInvitationMessage(
+                this,
+                callType = callType.toString(),
+                voice_or_video = MConstants.VIDEO_CALL_VALUE,
+                toUserId = userId.toString(),
+                channelName = channelName,
+                groupId,
+                groupName,
+                groupOwner,
+                groupDescription
+            )
+        }
+        //If Call from Group Chat
+        else{
+            //Sending Invitations to all members one by one.
+            membersList?.forEach { userId ->
+                ChatCallUtils.sendCallInvitationMessage(
+                    this,
+                    callType = callType.toString(),
+                    voice_or_video = MConstants.VIDEO_CALL_VALUE,
+                    toUserId = userId.toString(),
+                    channelName = channelName,
+                    groupId,
+                    groupName,
+                    groupOwner,
+                    groupDescription
+                )
+            }
+        }
+    },
     mOnUserOffline = {uid ->
         Log.d("fvklkfnbkf","onUserOffline")
         removeItemFromGroupRV(uid)
     })
 
-    private fun joinChannel(){
+    private fun enableLocalVideo(){
         if(!checkSelfPermission()){
             showToast("Permissions are not granted!")
             return
         }
 
-        if(rtcEngine == null) setUpAgoraEngine()
+        if(rtcEngine == null) setUpRtcEngine()
 
-        setUpLocalVideo()
         rtcEngine?.startPreview()
+        setUpLocalVideo()
+    }
 
-
+    private fun joinChannel(){
         val channelOptions = ChannelMediaOptions()
         channelOptions.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION
-
-
         /**To allow only group members UID to join the video. */
         // rtcEngine?.setSubscribeVideoAllowlist()
-
-
         rtcEngine?.joinChannel(token,channelName,uId,channelOptions)
-
-
-        var sharedPreference = getSharedPreferences("Local_Stroge", Context.MODE_PRIVATE)
-        //   anotherDeviceToken = sharedPreference.getString(com.example.agorademoapps.Constants.ANOTHER_DEVICE_TOKEN_KEY,"").toString()
-
-        // val remoteMessage = RemoteMessage.Builder(anotherDeviceToken).build()
-        //  FirebaseMessaging.getInstance().send(remoteMessage)
-
     }
 
     private fun setUpRemoteVideo(remoteUid : Int){
@@ -320,6 +379,33 @@ class GroupVideoCallActivity : AppCompatActivity() {
         if(reject == MConstants.REJECT_CALL_ACTION_VALUE)
         {
             finish()
+        }
+    }
+
+    private fun fetchGroupMembers(){
+
+        try {
+            ChatClient.getInstance().groupManager().asyncFetchGroupMembers(
+                groupId,
+                "",
+                100,
+                object : ValueCallBack<CursorResult<String>> {
+                    override fun onSuccess(value: CursorResult<String>?) {
+                        try {
+                            membersList = value?.data as ArrayList<String>
+                        }catch (e:Exception){
+                        }
+                    }
+
+                    override fun onError(code: Int, error: String?) {
+                        Log.d("fmkvmfv", error.toString() + "  error group Members")
+                    }
+
+                    override fun onProgress(progress: Int, status: String?) {
+                    }
+                })
+        }catch (e:Exception){
+            Log.d("Fvlvmfkmvf",e.message.toString() + "  exception")
         }
     }
 

@@ -2,11 +2,13 @@ package com.example.chat__groupchatapp
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.example.chat__groupchatapp.ui.activities.MConstants
 import io.agora.CallBack
 import io.agora.chat.ChatClient
 import io.agora.chat.ChatMessage
 import io.agora.chat.TextMessageBody
+import io.agora.chat.uikit.EaseUIKit
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -27,11 +29,20 @@ object ChatCallUtils {
 
         Log.d("fvblfmbkfm",channelName.toString())
 
-        val callActionMessage = if(voice_or_video == MConstants.VOICE_OR_VIDEO){
-            if(callType == MConstants.SINGLE_CALL_TYPE_VALUE) "Voice Call" else "Group Voice Call"
+        val callActionMessage = if(voice_or_video == MConstants.VOICE_CALL_VALUE){
+            if(callType == MConstants.SINGLE_CALL_TYPE_VALUE){
+                 "Voice Call"
+            }else {
+                "Group Voice Call"
+            }
         }else{
-            if(callType == MConstants.GROUP_CALL_TYPE_VALUE) "Video Call" else "Group Voice Call"
+            if(callType == MConstants.SINGLE_CALL_TYPE_VALUE){
+                "Video Call"
+            }else {
+                "Group Video Call"
+            }
         }
+
         val textMessage = TextMessageBody(callActionMessage)
         val pushObject = JSONObject()
         val titleArgs = JSONArray()
@@ -93,14 +104,21 @@ object ChatCallUtils {
         groupOwner: String?=null,
         groupDescription: String?=null
     ){
+
         val chatMessage = ChatMessage.createSendMessage(ChatMessage.Type.TXT)
 
-        Log.d("fvblfmbkfm",channelName.toString())
-
-        val callActionMessage = if(voice_or_video == MConstants.VOICE_OR_VIDEO){
-            if(callType == MConstants.SINGLE_CALL_TYPE_VALUE) "Voice Call" else "Group Voice Call"
+        val callActionMessage = if(voice_or_video == MConstants.VOICE_CALL_VALUE){
+            if(callType == MConstants.SINGLE_CALL_TYPE_VALUE){
+                "voice call closed"
+            }else {
+                "Group voice call closed"
+            }
         }else{
-            if(callType == MConstants.GROUP_CALL_TYPE_VALUE) "Video Call" else "Group Voice Call"
+            if(callType == MConstants.SINGLE_CALL_TYPE_VALUE){
+                "Video call closed"
+            }else {
+                "Group video call closed"
+            }
         }
         val textMessage = TextMessageBody(callActionMessage)
         val pushObject = JSONObject()

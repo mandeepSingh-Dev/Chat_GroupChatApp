@@ -5,8 +5,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -81,15 +84,24 @@ class UsersGroupActivity : AppCompatActivity() {
         }
     }
     var currentUser : String? = null
-
     private val mGroupChangeListener = MGroupChangeListener()
 
+    @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUsersGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpClickListeners()
 
+
+   /*      val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        Log.d("fvlmkfbmvf",powerManager.isIgnoringBatteryOptimizations(this.packageName.toString()).toString())
+        if(!powerManager.isIgnoringBatteryOptimizations(this.packageName)){
+            val intent = Intent()
+            intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            intent.setData(Uri.parse("package:"+this.packageName))
+            startActivity(intent)
+        } */
 
         initChatUISDK()
        // initAgoraCallKitSdk()

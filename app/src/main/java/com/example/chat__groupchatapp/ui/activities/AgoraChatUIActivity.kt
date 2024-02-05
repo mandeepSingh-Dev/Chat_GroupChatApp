@@ -243,7 +243,6 @@ class AgoraChatUIActivity : AppCompatActivity() {
 
                 val channelName = System.currentTimeMillis().toString()
 
-
                 val intent = Intent(this, VoiceCallActivity::class.java)
                 intent.putExtra(MConstants.IS_INCOMING_CALL, "false")
                 intent.putExtra(MConstants.TARGET_USER_ID, userEntity?.username)
@@ -720,6 +719,8 @@ object MConstants{
 
     const val ACCEPT_CALL_ACTION_VALUE = "accept"
     const val REJECT_CALL_ACTION_VALUE = "reject"
+
+    const val CALL_NOTIFICATION_ID = 100
 
 
 

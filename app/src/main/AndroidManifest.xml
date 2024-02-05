@@ -6,10 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> <!-- Add alert window -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- Access to the internet -->
-    <!-- Access to the microphone -->
-    <!-- Access to the camera -->
-    <!-- Access to the tasks -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
 
     <uses-feature
@@ -33,9 +30,13 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    
+
     <uses-permission
         android:name="android.permission.START_FOREGROUND_SERVICES_FROM_BACKGROUND"
         tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
         android:name=".MyApp"
@@ -72,7 +73,11 @@
             android:exported="false" />
         <activity
             android:name=".ui.activities.UsersGroupActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:showForAllUsers="true"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"/>
         <activity
             android:name=".ui.activities.RegisterActivity"
             android:exported="false" />
@@ -90,15 +95,24 @@
         </activity>
         <activity
             android:name=".ui.activities.VoiceCallActivity"
-        android:exported="true"
-            android:launchMode="singleTop"/>
+            android:exported="true"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            />
         <activity android:name=".ui.activities.VideoCallActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            />
 
         <activity android:name=".ui.activities.GroupVideoCallActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            />
         <activity
             android:name=".ui.activities.CallSingleBaseActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -161,6 +175,11 @@
             android:value="@string/default_notification_channel_id" />
 
         <receiver android:name=".MyBroadCastReceiver" />
+
+
+
+
+
     </application>
 
 </manifest>

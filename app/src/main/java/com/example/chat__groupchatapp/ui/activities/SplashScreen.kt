@@ -3,6 +3,10 @@ package com.example.chat__groupchatapp.ui.activities
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.app.job.JobService
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -12,6 +16,7 @@ import android.os.Bundle
 import android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT
 import androidx.core.app.NotificationCompat
 import com.example.chat__groupchatapp.AgoraChatHelper
+import com.example.chat__groupchatapp.ChatService
 import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.getExpiryInSeconds
 import com.example.chat__groupchatapp.databinding.ActivitySplashScreenBinding
@@ -35,6 +40,13 @@ class SplashScreen : AppCompatActivity() {
         agoraChatHelper?.setUpChatClient(this)
 
 
+    /*     val chatServiceComponentName = ComponentName(this,ChatService::class.java)
+        val jobInfo = JobInfo.Builder(101, chatServiceComponentName)
+            .setPeriodic(10)
+
+        val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+        jobScheduler.schedule(jobInfo.build())
+ */
 
         CoroutineScope(Dispatchers.Main).launch {
         delay(2000)

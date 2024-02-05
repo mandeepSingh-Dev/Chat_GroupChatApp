@@ -2,12 +2,12 @@ package com.example.chat__groupchatapp
 
 import android.app.Activity
 import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 
 class MyApp : Application(){
-
     override fun onCreate() {
         super.onCreate()
 
@@ -38,8 +38,13 @@ class MyApp : Application(){
             }
 
         })
+    }
 
 
+    override fun onTerminate() {
+        super.onTerminate()
+        val intent = Intent(this, ChatService::class.java)
+        startService(intent)
     }
 
 

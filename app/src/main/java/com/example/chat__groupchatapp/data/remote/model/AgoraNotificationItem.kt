@@ -11,5 +11,10 @@ data class AgoraNotificationItem(
     var caller_Id : String?= null,
     var call_or_chat : String?= null,
     var reject_call : String?= null,
+    var group_Id : String?= null,
+    var group_Name : String?= null,
+    var group_Description : String?= null,
+    var group_Owner : String?= null,
+
 
 )
