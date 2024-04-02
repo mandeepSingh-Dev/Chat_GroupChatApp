@@ -109,15 +109,15 @@ class MyBroadCastReceiver : BroadcastReceiver(){
         val notificationManager = context?.getSystemService(FirebaseMessagingService.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(context?.getString(R.string.default_notification_channel_id),context?.getString(R.string.default_notification_channel_id),NotificationManager.IMPORTANCE_HIGH)
-            notificationManager.createNotificationChannel(notificationChannel)
-
             val audioAttributes = AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .setLegacyStreamType(AudioManager.STREAM_RING)
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
 
             notificationChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE),audioAttributes)
-        }
+            notificationManager.createNotificationChannel(notificationChannel)
+
+               }
         val jsonBody = intent?.extras?.getString("e")
         val item = Gson().fromJson<AgoraNotificationItem>(jsonBody,AgoraNotificationItem::class.java)
 
