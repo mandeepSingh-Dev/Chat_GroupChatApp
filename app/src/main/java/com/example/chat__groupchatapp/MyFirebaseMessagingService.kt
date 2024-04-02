@@ -10,6 +10,7 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
 import android.os.Build
+import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,9 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import io.agora.chat.ChatClient
 import io.agora.chat.ChatMessage.ChatType
+import io.agora.chat.ChatOptions
+import io.agora.rtc2.RtcEngine
+import io.agora.rtc2.RtcEngineConfig
 
 /*import io.agora.chat.callkit.EaseCallKit
 import io.agora.chat.callkit.bean.EaseCallUserInfo
@@ -60,10 +64,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val activityIntent = Intent(this,MyBroadCastReceiver::class.java)
         intent?.extras?.keySet()?.forEach {
-            Log.d("Fvkfnvbjkfnvf",it + "    " + intent?.extras?.get(it).toString())
+            Log.d("Fvkfnvbjkfnvf",it + "    " + intent.extras?.get(it).toString())
             activityIntent.putExtra(it,intent.extras?.get(it).toString())
         }
         sendBroadcast(activityIntent)
+
+
     }
 }
 
@@ -410,7 +416,12 @@ class MyBroadCastReceiver : BroadcastReceiver(){
                         val intent = Intent(context,GroupVideoCallActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
                         intent.putExtra(MConstants.REJECT_CALL_ACTION,MConstants.REJECT_CALL_ACTION_VALUE)
-                        context?.startActivity(intent)
+                        context.startActivity(intent)
+
+
+
+
+
                     }
                 }
             }

@@ -122,7 +122,6 @@ class VideoCallActivity : AppCompatActivity() {
             permissionsLauncher.launch(REQUESTED_PERMISSIONS)
         }else{
             setUpRtcEngine()
-
         }
 
         if(isComingCall == "true"){
@@ -282,6 +281,7 @@ try {
         val channelOptions = ChannelMediaOptions()
         channelOptions.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION
         rtcEngine?.joinChannel(token,channelName,uId,channelOptions)
+
     }
 
 

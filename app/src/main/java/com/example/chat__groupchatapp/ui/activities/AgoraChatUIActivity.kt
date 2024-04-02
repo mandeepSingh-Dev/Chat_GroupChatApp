@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chat__groupchatapp.AgoraUiKitUtils.PermissionsManager
 import com.example.chat__groupchatapp.R
@@ -313,6 +314,7 @@ class AgoraChatUIActivity : AppCompatActivity() {
 
         val easeChatFragmentBuilder = EaseChatFragment.Builder(user,easeChatType)
         easeChatFragmentBuilder.useHeader(false)
+
         easeChatFragmentBuilder.setOnChatExtendMenuItemClickListener { view, itemId ->
             if(itemId == io.agora.chat.uikit.R.id.extend_item_take_picture) {
                 return@setOnChatExtendMenuItemClickListener !checkPermissions(Manifest.permission.CAMERA, 111);
@@ -484,7 +486,6 @@ class AgoraChatUIActivity : AppCompatActivity() {
             }
         }
 
-
     }
 
     fun sendCallMessage(callType : String, voice_or_video : String, to : String){
@@ -649,7 +650,9 @@ class AgoraChatUIActivity : AppCompatActivity() {
       //  cmdMsg.to = groupId
        // cmdMsg.addBody(cmdBody)
         ChatClient.getInstance().chatManager().sendMessage(cmdMsg)
+
     }
+
 
     var membersList = arrayListOf<String>()
 

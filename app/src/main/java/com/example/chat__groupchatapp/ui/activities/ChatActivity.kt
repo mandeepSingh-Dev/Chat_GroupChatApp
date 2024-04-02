@@ -92,8 +92,6 @@ class ChatActivity : AppCompatActivity() {
     )
 
 
-
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -238,7 +236,6 @@ class ChatActivity : AppCompatActivity() {
         messagesAdapter?.submitList(mList){
             binding.messagesRecyclerView.smoothScrollToPosition(0)
         }
-
     }
 
     fun addListToAdappterList(chatMessageList: List<ChatMessage>?){

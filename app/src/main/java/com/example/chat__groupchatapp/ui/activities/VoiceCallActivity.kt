@@ -1,8 +1,10 @@
 package com.example.chat__groupchatapp.ui.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
@@ -12,12 +14,18 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.agorademoapps.Util.RtcEventHandler
 import com.example.chat__groupchatapp.AgoraTokenUtils.RtcTokenBuilder2
 import com.example.chat__groupchatapp.ChatCallUtils
 import com.example.chat__groupchatapp.R
 import com.example.chat__groupchatapp.Utils.TokenBuilder
 import com.example.chat__groupchatapp.Utils.invisible
+import com.example.chat__groupchatapp.Utils.showToast
 import com.example.chat__groupchatapp.Utils.visible
 import com.example.chat__groupchatapp.databinding.ActivityVoiceCallBinding
 import io.agora.ValueCallBack
@@ -70,6 +78,7 @@ class VoiceCallActivity : AppCompatActivity() {
         setContentView(binding.root)
         appId = getString(R.string.APP_ID)
 
+
         try {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(MConstants.CALL_NOTIFICATION_ID)
@@ -117,7 +126,12 @@ class VoiceCallActivity : AppCompatActivity() {
 
         tempToken = TokenBuilder.getRtcTokenOfUid(this,localUid,channelName,RtcTokenBuilder2.Role.ROLE_PUBLISHER)
 
-        setUpRtcEngine()
+
+        if (!checkSelfPermission()) {
+            permissionsLauncher.launch(REQUESTED_PERMISSIONS)
+        }else{
+            setUpRtcEngine()
+        }
         setClickListeners()
 
         if(isComingCall == "false"){
@@ -371,6 +385,34 @@ class VoiceCallActivity : AppCompatActivity() {
         }
     }
 
+    protected fun checkSelfPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            REQUESTED_PERMISSIONS[0]
+        ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    REQUESTED_PERMISSIONS[1]
+                ) == PackageManager.PERMISSION_GRANTED
+    }
 
+
+
+
+
+    private val permissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+        val recordAudioPermission = it.get(REQUESTED_PERMISSIONS[0]) ?: false
+        val cameraPermission = it.get(REQUESTED_PERMISSIONS[1]) ?: false
+
+        if(!recordAudioPermission && !cameraPermission){
+            showToast("Please allow camera and audio permission.")
+        }else if(!recordAudioPermission){
+            showToast("Please allow audio permission.")
+        }else if(!cameraPermission){
+            showToast("Please allow camera permission.")
+        }else{
+            setUpRtcEngine()
+        }
+    }
 
 }
