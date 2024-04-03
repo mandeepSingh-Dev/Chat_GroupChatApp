@@ -27,16 +27,23 @@ import com.example.agorademoapps.Util.RtcEventHandler
 import com.example.chat__groupchatapp.AgoraTokenUtils.RtcTokenBuilder2
 import com.example.chat__groupchatapp.ChatCallUtils
 import com.example.chat__groupchatapp.R
+import com.example.chat__groupchatapp.Utils.AgoraSDKDownloaderFromRetrofit
 import com.example.chat__groupchatapp.Utils.TokenBuilder
 import com.example.chat__groupchatapp.Utils.invisible
 import com.example.chat__groupchatapp.Utils.showToast
 import com.example.chat__groupchatapp.Utils.visible
 import com.example.chat__groupchatapp.databinding.ActivityVideoBinding
+import com.google.firebase.crashlytics.internal.model.CrashlyticsReport.FilesPayload.File
 import io.agora.chat.ChatClient
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
+import io.agora.rtc2.RtcEngineConfig
 import io.agora.rtc2.video.VideoCanvas
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class VideoCallActivity : AppCompatActivity() {
@@ -82,6 +89,12 @@ class VideoCallActivity : AppCompatActivity() {
         setContentView(binding.root)
         appId = getString(R.string.APP_ID)
 
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(16000)
+            Log.d("fkvkfvmf",rtcEngine.toString())
+        }
+
         try {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(MConstants.CALL_NOTIFICATION_ID)
@@ -89,7 +102,7 @@ class VideoCallActivity : AppCompatActivity() {
 
         isComingCall = intent.getStringExtra(MConstants.IS_INCOMING_CALL)
 
-        try {
+        /* try {
             uId = ChatClient.getInstance().currentUser.toInt() ?: 0
             Log.d("bgkbngbgk",uId.toString())
         }catch (e:Exception){
@@ -97,7 +110,7 @@ class VideoCallActivity : AppCompatActivity() {
             val sp = getSharedPreferences(com.example.chat__groupchatapp.Utils.Constants.sharedPrefName, MODE_PRIVATE)
             uId = sp.getString(com.example.chat__groupchatapp.Utils.Constants.user,"")?.toInt() ?: 0
             Log.d("fvfkbnmgkbg",uId.toString())
-        }
+        } */
 
         userId = intent.getStringExtra(MConstants.TARGET_USER_ID) ?: ""
         isComingCall = intent.getStringExtra(MConstants.IS_INCOMING_CALL)
@@ -202,15 +215,42 @@ try {
     private fun setUpRtcEngine(){
         try {
 
-            rtcEngine = RtcEngine.create(this,appId, rtcEventHandler)
+            val file = java.io.File(cacheDir.path,AgoraSDKDownloaderFromRetrofit.folderName).toString()
+
+           // LOg.d
+
+          val rtcConfig =  RtcEngineConfig()
+            Log.d("fkbkfnvf","1")
+                rtcConfig.mContext = this
+            Log.d("fkbkfnvf","2")
+                rtcConfig.mAppId = appId
+            rtcConfig.mEventHandler = rtcEventHandler
+            Log.d("fkbkfnvf","3")
+
+
+            java.io.File(cacheDir,AgoraSDKDownloaderFromRetrofit.folderName).listFiles().forEach {
+                Log.d("flbmkfmvf",it.name.toString() + " 22")
+            }
+            Log.d("fkbkfnvf","4")
+
+
+            rtcConfig.mNativeLibPath = "/data/data/com.example.chat__groupchatapp/files/AgoraSDKFiles"
+            Log.d("fkbkfnvf","5")
+
+
+            rtcEngine = RtcEngine.create(rtcConfig)
+            Log.d("fkbkfnvf","6")
 
             rtcEngine?.setChannelProfile(Constants.CHANNEL_PROFILE_COMMUNICATION)
+            Log.d("fkbkfnvf","7")
             rtcEngine?.enableVideo()
+            Log.d("fkbkfnvf","8")
+
             enableLocalVideo()
 
-            if(isComingCall == "false") {
+         //   if(isComingCall == "false") {
                 joinChannel()
-            }
+         //   }
 
 
         }catch (e: Exception){
@@ -270,7 +310,8 @@ try {
             return
         }
 
-        if(rtcEngine == null) setUpRtcEngine()
+        if(rtcEngine == null)
+            setUpRtcEngine()
         rtcEngine?.startPreview()
         setUpLocalVideo()
 

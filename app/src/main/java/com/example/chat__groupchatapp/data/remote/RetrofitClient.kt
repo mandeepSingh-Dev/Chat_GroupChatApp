@@ -109,7 +109,7 @@ interface AgoraService
 
 
     @GET
-    fun downloadFileWithRetrofit(@Url url: String) : Call<ResponseBody>
+    suspend fun downloadFileWithRetrofit(@Url url: String) : Response<ResponseBody>
 
 
     @GET

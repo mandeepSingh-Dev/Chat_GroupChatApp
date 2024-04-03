@@ -163,17 +163,17 @@ class MainActivity2 : AppCompatActivity() {
 
 
     fun uploadFil2(){
-        val url = URL("https://buzz-be.s3-eu-west-1.amazonaws.com/chat/4a804ebe-edcc-4c57-b042-ab7a72ada9c4.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240402T132654Z&X-Amz-SignedHeaders=host&X-Amz-Expires=1800&X-Amz-Credential=AKIAQ6BJZ3SORCYJG4PS%2F20240402%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Signature=e138acd28db5cd7ca1b7180c8e362a5bfd2db92c1a55b1ccd18dae2b64b47f1b")
+        val url = URL("https://buzz-be.s3-eu-west-1.amazonaws.com/chat/89ea0618-dc67-4675-b59d-255318decd99.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240402T134813Z&X-Amz-SignedHeaders=host&X-Amz-Expires=1800&X-Amz-Credential=AKIAQ6BJZ3SORCYJG4PS%2F20240402%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Signature=d8e8d4ff99b6a43469a55101f3f7c606f22bcd3d1d6a2cf04debb213617cd297")
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "PUT"
         connection.doOutput = true
 
-        val file=  File("/data/data/com.example.chat__groupchatapp/cache/4-minute Video 1.mp4")
+     //   val file=  File("/data/data/com.example.chat__groupchatapp/cache/4-minute Video 1.mp4")
+        val file=  File("/data/data/com.example.chat__groupchatapp/cache/WORLD OF WARCRAFT Full Movie Cinematic (2023) 4K ULTRA HD Action Fantasy.mp4")
 //        val file=  File("/data/data/com.example.chat__groupchatapp/cache/email.svg")
-        var fileName = "4a804ebe-edcc-4c57-b042-ab7a72ada9c4.mp4"
+        var fileName = "89ea0618-dc67-4675-b59d-255318decd99.mp4"
 
         val fileInputStream = FileInputStream(file)
-        val fileInputStream_temp = FileInputStream(file)
         val outputStream = connection.outputStream
 
 
@@ -198,6 +198,8 @@ class MainActivity2 : AppCompatActivity() {
 
         while (fileInputStream.read(buffer).also { bytesRead = it } != -1) {
             outputStream.write(buffer, 0, bytesRead)
+
+
         }
 
         outputStream.flush()
@@ -212,7 +214,6 @@ class MainActivity2 : AppCompatActivity() {
 // Handle response code accordingly
         connection.disconnect()
     }
-
 
 }
 
