@@ -352,6 +352,7 @@ try {
         binding.localVideoFrame.addView(localSurfaceView)
     }
 
+
     fun leaveChannel(){
         Log.d("bkgkbngb","finishOnnew Inte")
         try {
@@ -448,8 +449,4 @@ try {
             finish()
         }
     }
-}
-
-class MyConnectionClass : Connection(){
-
 }

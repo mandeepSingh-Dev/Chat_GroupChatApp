@@ -501,7 +501,7 @@ class RtcEventHandler(
         super.onUserEnableLocalVideo(uid, enabled)
         onUserEnableLocalVideoo( uid,enabled)
 
-        Log.d("fbkfnbkjgf","onUserEnableLocalVideo")
+     Log.d("fbkfnbkjgf","onUserEnableLocalVideo")
     }
 
     override fun onVideoSizeChanged(

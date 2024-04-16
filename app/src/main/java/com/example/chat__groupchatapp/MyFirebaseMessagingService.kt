@@ -27,17 +27,6 @@ import io.agora.chat.ChatOptions
 import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.RtcEngineConfig
 
-/*import io.agora.chat.callkit.EaseCallKit
-import io.agora.chat.callkit.bean.EaseCallUserInfo
-import io.agora.chat.callkit.general.EaseCallEndReason
-import io.agora.chat.callkit.general.EaseCallError
-import io.agora.chat.callkit.general.EaseCallKitConfig
-import io.agora.chat.callkit.general.EaseCallType
-import io.agora.chat.callkit.listener.EaseCallGetUserAccountCallback
-import io.agora.chat.callkit.listener.EaseCallKitListener
-import io.agora.chat.callkit.listener.EaseCallKitTokenCallback*/
-
-
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
 
@@ -246,7 +235,9 @@ class MyBroadCastReceiver : BroadcastReceiver(){
         Log.d("fvfkvkfvf",call_action.toString())
         fullScreenIntent.putExtra(MConstants.CALL_ACTION,call_action)
 
+
         return fullScreenIntent
+
 
     }
 
@@ -440,5 +431,4 @@ class CallActionsReciever : BroadcastReceiver(){
              }
          }
     }
-
 }

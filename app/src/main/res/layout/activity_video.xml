@@ -39,7 +39,7 @@
             android:id="@+id/remoteVideoFrameCardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_weight="1"
             android:layout_margin="10dp"
             >

@@ -537,6 +537,7 @@ class AgoraChatUIActivity : AppCompatActivity() {
         })
 
         ChatClient.getInstance().chatManager().sendMessage(chatMessage)
+
     }
 
     fun sendChatMessage(type: String) {
